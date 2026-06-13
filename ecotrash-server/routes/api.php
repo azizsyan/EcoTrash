@@ -88,6 +88,11 @@ Route::middleware([
         [ProfileController::class, 'update']
     );
 
+    Route::post(
+        '/profile',
+        [ProfileController::class, 'update']
+    );
+
     Route::patch(
         '/profile/password',
         [ProfileController::class, 'changePassword']
