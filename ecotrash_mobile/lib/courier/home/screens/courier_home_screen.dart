@@ -27,10 +27,15 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
   }
 
   Future<void> _refresh() async {
+    if (!mounted) return;
     await context.read<AuthProvider>().fetchProfile();
+    if (!mounted) return;
     await context.read<CourierOrderProvider>().fetchMyCourierJobs();
+    if (!mounted) return;
     await context.read<CourierOrderProvider>().fetchAvailableJobs();
+    if (!mounted) return;
     await context.read<CourierOrderProvider>().fetchReviews();
+    if (!mounted) return;
     await context.read<CourierOrderProvider>().fetchNotifications();
   }
 
@@ -43,7 +48,11 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
         await context.read<AuthProvider>().fetchProfile();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(val ? 'Status diubah ke ONLINE! Siap bekerja.' : 'Status diubah ke OFFLINE. Selamat beristirahat.'),
+            content: Text(
+              val
+                  ? 'Status diubah ke ONLINE! Siap bekerja.'
+                  : 'Status diubah ke OFFLINE. Selamat beristirahat.',
+            ),
             backgroundColor: val ? Colors.green : Colors.orange,
           ),
         );
@@ -63,7 +72,10 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
       await provider.acceptJob(orderId);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Tugas berhasil diterima!'), backgroundColor: Color(0xFF0F4D19)),
+          const SnackBar(
+            content: Text('Tugas berhasil diterima!'),
+            backgroundColor: Color(0xFF0F4D19),
+          ),
         );
       }
     } catch (e) {
@@ -78,25 +90,48 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
     }
   }
 
-  double _getJobDistance(Map<String, dynamic>? courierProfile, double jobLat, double jobLon) {
+  double _getJobDistance(
+    Map<String, dynamic>? courierProfile,
+    double jobLat,
+    double jobLon,
+  ) {
     if (courierProfile == null) return 2.5; // fallback mock
-    final cLat = double.tryParse(courierProfile['current_latitude']?.toString() ?? '0') ?? 0.0;
-    final cLon = double.tryParse(courierProfile['current_longitude']?.toString() ?? '0') ?? 0.0;
+    final cLat =
+        double.tryParse(
+          courierProfile['current_latitude']?.toString() ?? '0',
+        ) ??
+        0.0;
+    final cLon =
+        double.tryParse(
+          courierProfile['current_longitude']?.toString() ?? '0',
+        ) ??
+        0.0;
     if (cLat == 0.0 || cLon == 0.0) {
       // Return a realistic mock distance based on job coordinates if GPS is not set
-      return double.tryParse(((jobLat - 6.2).abs() * 10 + 1.2).toStringAsFixed(1)) ?? 2.5;
+      return double.tryParse(
+            ((jobLat - 6.2).abs() * 10 + 1.2).toStringAsFixed(1),
+          ) ??
+          2.5;
     }
     final dist = _calculateDistance(cLat, cLon, jobLat, jobLon);
     return double.tryParse(dist.toStringAsFixed(1)) ?? 2.5;
   }
 
-  double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+  double _calculateDistance(
+    double lat1,
+    double lon1,
+    double lat2,
+    double lon2,
+  ) {
     const r = 6371; // Earth radius in km
     final dLat = _degToRad(lat2 - lat1);
     final dLon = _degToRad(lon2 - lon1);
-    final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
-        math.cos(_degToRad(lat1)) * math.cos(_degToRad(lat2)) *
-        math.sin(dLon / 2) * math.sin(dLon / 2);
+    final a =
+        math.sin(dLat / 2) * math.sin(dLat / 2) +
+        math.cos(_degToRad(lat1)) *
+            math.cos(_degToRad(lat2)) *
+            math.sin(dLon / 2) *
+            math.sin(dLon / 2);
     final c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
     return r * c;
   }
@@ -109,14 +144,22 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
     final lower = categoryName.toLowerCase();
     if (lower.contains('plastik')) return Icons.recycling_rounded;
     if (lower.contains('kertas')) return Icons.description_rounded;
-    if (lower.contains('e-waste') || lower.contains('elektronik') || lower.contains('digital')) {
+    if (lower.contains('e-waste') ||
+        lower.contains('elektronik') ||
+        lower.contains('digital')) {
       return Icons.devices_other_rounded;
     }
-    if (lower.contains('organik') || lower.contains('limbah') || lower.contains('organik')) {
+    if (lower.contains('organik') ||
+        lower.contains('limbah') ||
+        lower.contains('organik')) {
       return Icons.eco_rounded;
     }
-    if (lower.contains('kaca') || lower.contains('beling')) return Icons.science_rounded;
-    if (lower.contains('logam') || lower.contains('besi') || lower.contains('baja')) {
+    if (lower.contains('kaca') || lower.contains('beling')) {
+      return Icons.science_rounded;
+    }
+    if (lower.contains('logam') ||
+        lower.contains('besi') ||
+        lower.contains('baja')) {
       return Icons.hardware_rounded;
     }
     return Icons.restore_from_trash_rounded;
@@ -124,10 +167,18 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
 
   Color _getCategoryColor(String categoryName) {
     final lower = categoryName.toLowerCase();
-    if (lower.contains('plastik')) return const Color(0xFFE8F5E9); // light green
-    if (lower.contains('kertas')) return const Color(0xFFECEFF1); // light blue-grey
-    if (lower.contains('e-waste') || lower.contains('elektronik')) return const Color(0xFFE1F5FE); // light blue
-    if (lower.contains('organik')) return const Color(0xFFF1F8E9); // light olive
+    if (lower.contains('plastik')) {
+      return const Color(0xFFE8F5E9); // light green
+    }
+    if (lower.contains('kertas')) {
+      return const Color(0xFFECEFF1); // light blue-grey
+    }
+    if (lower.contains('e-waste') || lower.contains('elektronik')) {
+      return const Color(0xFFE1F5FE); // light blue
+    }
+    if (lower.contains('organik')) {
+      return const Color(0xFFF1F8E9); // light olive
+    }
     if (lower.contains('kaca')) return const Color(0xFFF3E5F5); // light purple
     if (lower.contains('logam')) return const Color(0xFFFFF3E0); // light orange
     return const Color(0xFFF5F5F5);
@@ -137,7 +188,9 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
     final lower = categoryName.toLowerCase();
     if (lower.contains('plastik')) return const Color(0xFF2E7D32);
     if (lower.contains('kertas')) return const Color(0xFF455A64);
-    if (lower.contains('e-waste') || lower.contains('elektronik')) return const Color(0xFF0288D1);
+    if (lower.contains('e-waste') || lower.contains('elektronik')) {
+      return const Color(0xFF0288D1);
+    }
     if (lower.contains('organik')) return const Color(0xFF558B2F);
     if (lower.contains('kaca')) return const Color(0xFF6A1B9A);
     if (lower.contains('logam')) return const Color(0xFFE65100);
@@ -154,17 +207,28 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
           builder: (context, provider, child) {
             final list = provider.notifications;
             return AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Notifikasi', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  const Text(
+                    'Notifikasi',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
                   if (list.isNotEmpty)
                     TextButton(
                       onPressed: () async {
                         await provider.markAllNotificationsAsRead();
                       },
-                      child: const Text('Baca Semua', style: TextStyle(fontSize: 12, color: Color(0xFF0F4D19))),
+                      child: const Text(
+                        'Baca Semua',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF0F4D19),
+                        ),
+                      ),
                     ),
                 ],
               ),
@@ -176,11 +240,18 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: const [
-                            Icon(Icons.notifications_off_outlined, size: 48, color: Colors.grey),
+                            Icon(
+                              Icons.notifications_off_outlined,
+                              size: 48,
+                              color: Colors.grey,
+                            ),
                             SizedBox(height: 12),
                             Text(
                               'Belum ada notifikasi baru',
-                              style: TextStyle(color: Colors.grey, fontSize: 13),
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 13,
+                              ),
                             ),
                           ],
                         ),
@@ -196,22 +267,34 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                               }
                             },
                             child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 12,
+                                horizontal: 8,
+                              ),
                               decoration: BoxDecoration(
-                                border: Border(bottom: BorderSide(color: Colors.grey.shade100)),
-                                color: notif.isRead ? Colors.transparent : Colors.green.withOpacity(0.04),
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: Colors.grey.shade100,
+                                  ),
+                                ),
+                                color: notif.isRead
+                                    ? Colors.transparent
+                                    : Colors.green.withValues(alpha: 0.04),
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Expanded(
                                         child: Text(
                                           notif.title,
                                           style: TextStyle(
-                                            fontWeight: notif.isRead ? FontWeight.normal : FontWeight.bold,
+                                            fontWeight: notif.isRead
+                                                ? FontWeight.normal
+                                                : FontWeight.bold,
                                             fontSize: 13,
                                             color: const Color(0xFF212121),
                                           ),
@@ -221,19 +304,28 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                                         Container(
                                           width: 6,
                                           height: 6,
-                                          decoration: const BoxDecoration(color: Colors.green, shape: BoxShape.circle),
+                                          decoration: const BoxDecoration(
+                                            color: Colors.green,
+                                            shape: BoxShape.circle,
+                                          ),
                                         ),
                                     ],
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
                                     notif.message,
-                                    style: const TextStyle(fontSize: 11, color: Colors.grey),
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.grey,
+                                    ),
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
                                     notif.createdAt.split('T').first,
-                                    style: const TextStyle(fontSize: 9, color: Colors.black26),
+                                    style: const TextStyle(
+                                      fontSize: 9,
+                                      color: Colors.black26,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -245,7 +337,13 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Tutup', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
+                  child: const Text(
+                    'Tutup',
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ],
             );
@@ -280,7 +378,11 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                     children: [
                       const Text(
                         'Semua Ulasan Penjual',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Color(0xFF1A1A1A)),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: Color(0xFF1A1A1A),
+                        ),
                       ),
                       IconButton(
                         icon: const Icon(Icons.close_rounded),
@@ -295,9 +397,16 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: const [
-                                Icon(Icons.star_outline_rounded, size: 48, color: Colors.grey),
+                                Icon(
+                                  Icons.star_outline_rounded,
+                                  size: 48,
+                                  color: Colors.grey,
+                                ),
                                 SizedBox(height: 12),
-                                Text('Belum ada ulasan', style: TextStyle(color: Colors.grey)),
+                                Text(
+                                  'Belum ada ulasan',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
                               ],
                             ),
                           )
@@ -312,7 +421,9 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(color: Colors.grey.shade200),
+                                  border: Border.all(
+                                    color: Colors.grey.shade200,
+                                  ),
                                 ),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -321,26 +432,46 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                                       children: [
                                         CircleAvatar(
                                           radius: 18,
-                                          backgroundColor: const Color(0xFF0F4D19),
+                                          backgroundColor: const Color(
+                                            0xFF0F4D19,
+                                          ),
                                           child: Text(
-                                            rev.seller?.name != null ? rev.seller!.name[0].toUpperCase() : 'S',
-                                            style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                                            rev.seller?.name != null
+                                                ? rev.seller!.name[0]
+                                                      .toUpperCase()
+                                                : 'S',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                         const SizedBox(width: 10),
                                         Expanded(
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                rev.seller?.name ?? 'Seller EcoTrash',
-                                                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF1A1A1A)),
+                                                rev.seller?.name ??
+                                                    'Seller EcoTrash',
+                                                style: const TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color(0xFF1A1A1A),
+                                                ),
                                               ),
                                               const SizedBox(height: 2),
                                               Row(
-                                                children: List.generate(5, (sIdx) {
+                                                children: List.generate(5, (
+                                                  sIdx,
+                                                ) {
                                                   return Icon(
-                                                    rev.rating > sIdx ? Icons.star_rounded : Icons.star_border_rounded,
+                                                    rev.rating > sIdx
+                                                        ? Icons.star_rounded
+                                                        : Icons
+                                                              .star_border_rounded,
                                                     color: Colors.orange,
                                                     size: 13,
                                                   );
@@ -353,7 +484,8 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                                     ),
                                     const SizedBox(height: 10),
                                     Text(
-                                      rev.comment != null && rev.comment!.isNotEmpty
+                                      rev.comment != null &&
+                                              rev.comment!.isNotEmpty
                                           ? '"${rev.comment!}"'
                                           : '"Sangat baik!"',
                                       style: TextStyle(
@@ -382,7 +514,7 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
     final courierProvider = context.watch<CourierOrderProvider>();
-    
+
     final user = authProvider.user;
     final isOnline = user?['is_online'] == true || user?['is_online'] == 1;
     final courierProfile = user?['courier_profile'];
@@ -393,14 +525,22 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
         ? '${DioClient().baseUrl}/storage-proxy/$facePhotoPath'
         : null;
 
-    final rating = double.tryParse(courierProfile?['rating']?.toString() ?? '0') ?? 0.0;
+    final rating =
+        double.tryParse(courierProfile?['rating']?.toString() ?? '0') ?? 0.0;
     final displayRating = rating == 0.0 ? 4.9 : rating;
 
     // Resolve vehicle details dynamically
-    final vehicleTypeRaw = courierProfile?['vehicle_type']?.toString().toLowerCase() ?? '';
-    final isCar = vehicleTypeRaw.contains('mobil') || vehicleTypeRaw.contains('cargo') || vehicleTypeRaw.contains('car') || vehicleTypeRaw.contains('drive');
+    final vehicleTypeRaw =
+        courierProfile?['vehicle_type']?.toString().toLowerCase() ?? '';
+    final isCar =
+        vehicleTypeRaw.contains('mobil') ||
+        vehicleTypeRaw.contains('cargo') ||
+        vehicleTypeRaw.contains('car') ||
+        vehicleTypeRaw.contains('drive');
     final vehicleTitle = isCar ? 'EcoDrive' : 'EcoRide';
-    final vehicleIcon = isCar ? Icons.local_shipping_rounded : Icons.motorcycle_rounded;
+    final vehicleIcon = isCar
+        ? Icons.local_shipping_rounded
+        : Icons.motorcycle_rounded;
 
     // Greeting based on time
     String getGreeting() {
@@ -412,7 +552,9 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFEFF2EE), // Soft pastel green-grey scaffold background
+      backgroundColor: const Color(
+        0xFFEFF2EE,
+      ), // Soft pastel green-grey scaffold background
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: SingleChildScrollView(
@@ -423,7 +565,12 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
               // 1. Premium Header (Full Width White Background)
               Container(
                 color: Colors.white,
-                padding: const EdgeInsets.only(top: 50, bottom: 16, left: 24, right: 24),
+                padding: const EdgeInsets.only(
+                  top: 50,
+                  bottom: 16,
+                  left: 24,
+                  right: 24,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -475,7 +622,11 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                         Stack(
                           children: [
                             IconButton(
-                              icon: const Icon(Icons.notifications_none_rounded, color: Color(0xFF212121), size: 26),
+                              icon: const Icon(
+                                Icons.notifications_none_rounded,
+                                color: Color(0xFF212121),
+                                size: 26,
+                              ),
                               onPressed: () => _showNotificationDialog(context),
                             ),
                             if (courierProvider.unreadCount > 0)
@@ -510,7 +661,10 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                         Container(
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(color: const Color(0xFFC8E6C9), width: 2),
+                            border: Border.all(
+                              color: const Color(0xFFC8E6C9),
+                              width: 2,
+                            ),
                           ),
                           child: CircleAvatar(
                             radius: 20,
@@ -521,7 +675,9 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                             child: facePhotoUrl == null
                                 ? Text(
                                     user != null && user['name'] != null
-                                        ? user['name'][0].toString().toUpperCase()
+                                        ? user['name'][0]
+                                              .toString()
+                                              .toUpperCase()
                                         : 'K',
                                     style: const TextStyle(
                                       color: Colors.white,
@@ -542,7 +698,10 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
 
               // 2. Greeting Section
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 8,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -587,7 +746,7 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                           children: [
                             Switch(
                               value: isOnline,
-                              activeColor: const Color(0xFF2E7D32),
+                              activeThumbColor: const Color(0xFF2E7D32),
                               activeTrackColor: const Color(0xFFC8E6C9),
                               onChanged: _toggleOnline,
                             ),
@@ -596,7 +755,9 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
-                                color: isOnline ? const Color(0xFF2E7D32) : Colors.grey,
+                                color: isOnline
+                                    ? const Color(0xFF2E7D32)
+                                    : Colors.grey,
                               ),
                             ),
                           ],
@@ -613,13 +774,16 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 16,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.02),
+                        color: Colors.black.withValues(alpha: 0.02),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       ),
@@ -724,7 +888,7 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.02),
+                          color: Colors.black.withValues(alpha: 0.02),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -759,7 +923,10 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                               ],
                             ),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
                               decoration: BoxDecoration(
                                 color: const Color(0xFFFFF3E0),
                                 borderRadius: BorderRadius.circular(10),
@@ -768,10 +935,10 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                                 activeJob.status == 'ACCEPTED'
                                     ? 'DISETUJUI'
                                     : activeJob.status == 'PICKED_UP'
-                                        ? 'DALAM PERJALANAN'
-                                        : activeJob.status == 'DELIVERED'
-                                            ? 'SAMPAI DI GUDANG'
-                                            : activeJob.status,
+                                    ? 'DALAM PERJALANAN'
+                                    : activeJob.status == 'DELIVERED'
+                                    ? 'SAMPAI DI GUDANG'
+                                    : activeJob.status,
                                 style: TextStyle(
                                   color: Colors.orange.shade800,
                                   fontWeight: FontWeight.bold,
@@ -797,7 +964,10 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                                   decoration: BoxDecoration(
                                     color: const Color(0xFFE8F5E9),
                                     shape: BoxShape.circle,
-                                    border: Border.all(color: const Color(0xFF2E7D32), width: 2),
+                                    border: Border.all(
+                                      color: const Color(0xFF2E7D32),
+                                      width: 2,
+                                    ),
                                   ),
                                   child: const Center(
                                     child: CircleAvatar(
@@ -817,7 +987,10 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                                   decoration: BoxDecoration(
                                     color: const Color(0xFFFFF3E0),
                                     shape: BoxShape.circle,
-                                    border: Border.all(color: Colors.orange.shade800, width: 2),
+                                    border: Border.all(
+                                      color: Colors.orange.shade800,
+                                      width: 2,
+                                    ),
                                   ),
                                   child: Center(
                                     child: CircleAvatar(
@@ -834,7 +1007,8 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       const Text(
                                         'Penjemputan',
@@ -846,20 +1020,29 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                                       ),
                                       const SizedBox(height: 4),
                                       Text(
-                                        activeJob.seller?.name ?? 'Seller EcoTrash',
-                                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF1A1A1A)),
+                                        activeJob.seller?.name ??
+                                            'Seller EcoTrash',
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF1A1A1A),
+                                        ),
                                       ),
                                       Text(
                                         activeJob.sellerAddress?.address ?? '-',
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(fontSize: 11, color: Colors.grey),
+                                        style: const TextStyle(
+                                          fontSize: 11,
+                                          color: Colors.grey,
+                                        ),
                                       ),
                                     ],
                                   ),
                                   const SizedBox(height: 18),
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: const [
                                       Text(
                                         'Tujuan',
@@ -872,11 +1055,18 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                                       SizedBox(height: 4),
                                       Text(
                                         'Gudang Utama EcoTrash',
-                                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF1A1A1A)),
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF1A1A1A),
+                                        ),
                                       ),
                                       Text(
                                         'Jalan Raya Buah Batu No. 12, Bandung',
-                                        style: TextStyle(fontSize: 11, color: Colors.grey),
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          color: Colors.grey,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -896,18 +1086,26 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                             ),
                             elevation: 0,
                           ),
-                          icon: const Icon(Icons.check_circle_outline_rounded, size: 20),
+                          icon: const Icon(
+                            Icons.check_circle_outline_rounded,
+                            size: 20,
+                          ),
                           label: Text(
                             activeJob.status == 'DELIVERED'
                                 ? 'Selesaikan Tugas'
                                 : 'Buka Alur Penjemputan',
-                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => CourierActiveJobScreen(orderId: activeJob.id),
+                                builder: (context) => CourierActiveJobScreen(
+                                  orderId: activeJob.id,
+                                ),
                               ),
                             );
                           },
@@ -937,7 +1135,10 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.grey.shade200,
                             borderRadius: BorderRadius.circular(10),
@@ -971,7 +1172,7 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              
+
               courierProvider.reviews.isEmpty
                   ? Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -984,11 +1185,18 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                         ),
                         child: Column(
                           children: const [
-                            Icon(Icons.star_outline_rounded, color: Colors.grey, size: 36),
+                            Icon(
+                              Icons.star_outline_rounded,
+                              color: Colors.grey,
+                              size: 36,
+                            ),
                             SizedBox(height: 8),
                             Text(
                               'Belum ada ulasan dari penjual.',
-                              style: TextStyle(color: Colors.grey, fontSize: 13),
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 13,
+                              ),
                             ),
                           ],
                         ),
@@ -1020,24 +1228,38 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                                       radius: 18,
                                       backgroundColor: const Color(0xFF0F4D19),
                                       child: Text(
-                                        rev.seller?.name != null ? rev.seller!.name[0].toUpperCase() : 'S',
-                                        style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                                        rev.seller?.name != null
+                                            ? rev.seller!.name[0].toUpperCase()
+                                            : 'S',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                     const SizedBox(width: 10),
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            rev.seller?.name ?? 'Seller EcoTrash',
-                                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF1A1A1A)),
+                                            rev.seller?.name ??
+                                                'Seller EcoTrash',
+                                            style: const TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xFF1A1A1A),
+                                            ),
                                           ),
                                           const SizedBox(height: 2),
                                           Row(
                                             children: List.generate(5, (sIdx) {
                                               return Icon(
-                                                rev.rating > sIdx ? Icons.star_rounded : Icons.star_border_rounded,
+                                                rev.rating > sIdx
+                                                    ? Icons.star_rounded
+                                                    : Icons.star_border_rounded,
                                                 color: Colors.orange,
                                                 size: 13,
                                               );
@@ -1051,7 +1273,8 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                                 const SizedBox(height: 10),
                                 Expanded(
                                   child: Text(
-                                    rev.comment != null && rev.comment!.isNotEmpty
+                                    rev.comment != null &&
+                                            rev.comment!.isNotEmpty
                                         ? '"${rev.comment!}"'
                                         : '"Sangat baik!"',
                                     maxLines: 2,
@@ -1091,27 +1314,44 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
               if (!isOnline && activeJob == null) ...[
                 // Offline State Card
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                   child: Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: Colors.orange.withOpacity(0.05),
+                      color: Colors.orange.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.orange.withOpacity(0.15)),
+                      border: Border.all(
+                        color: Colors.orange.withValues(alpha: 0.15),
+                      ),
                     ),
                     child: Column(
                       children: const [
-                        Icon(Icons.wifi_off_rounded, color: Colors.orange, size: 40),
+                        Icon(
+                          Icons.wifi_off_rounded,
+                          color: Colors.orange,
+                          size: 40,
+                        ),
                         SizedBox(height: 12),
                         Text(
                           'Status Kerja Offline',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Color(0xFF212121)),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: Color(0xFF212121),
+                          ),
                         ),
                         SizedBox(height: 6),
                         Text(
                           'Aktifkan status "Mulai Online" di atas untuk melihat dan menerima tugas penjemputan sampah!',
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 12, color: Colors.grey, height: 1.5),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                            height: 1.5,
+                          ),
                         ),
                       ],
                     ),
@@ -1124,7 +1364,11 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                   child: Center(
                     child: Column(
                       children: [
-                        Icon(Icons.assignment_turned_in_outlined, size: 48, color: Colors.grey),
+                        Icon(
+                          Icons.assignment_turned_in_outlined,
+                          size: 48,
+                          color: Colors.grey,
+                        ),
                         SizedBox(height: 12),
                         Text(
                           'Belum ada tugas tersedia saat ini.\nSilakan tarik untuk memuat ulang.',
@@ -1140,18 +1384,28 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 8,
+                  ),
                   itemCount: courierProvider.availableJobs.length,
                   itemBuilder: (context, index) {
                     final job = courierProvider.availableJobs[index];
-                    final firstItem = job.items.isNotEmpty ? job.items.first : null;
-                    final categoryName = firstItem?.wasteCategory?.name ?? 'Sampah Campuran';
-                    
+                    final firstItem = job.items.isNotEmpty
+                        ? job.items.first
+                        : null;
+                    final categoryName =
+                        firstItem?.wasteCategory?.name ?? 'Sampah Campuran';
+
                     final iconData = _getCategoryIcon(categoryName);
                     final bgColor = _getCategoryColor(categoryName);
                     final iconColor = _getCategoryIconColor(categoryName);
 
-                    final distance = _getJobDistance(courierProfile, job.latitude, job.longitude);
+                    final distance = _getJobDistance(
+                      courierProfile,
+                      job.latitude,
+                      job.longitude,
+                    );
                     final hasActive = activeJob != null;
 
                     return Container(
@@ -1162,7 +1416,7 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.02),
+                            color: Colors.black.withValues(alpha: 0.02),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),
@@ -1188,15 +1442,24 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                               ),
                               if (hasActive)
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 4,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: Colors.grey.shade100,
                                     borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(color: Colors.grey.shade300),
+                                    border: Border.all(
+                                      color: Colors.grey.shade300,
+                                    ),
                                   ),
                                   child: const Text(
                                     'Tugas Aktif Berjalan',
-                                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey),
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey,
+                                    ),
                                   ),
                                 ),
                             ],
@@ -1207,7 +1470,9 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 15,
-                              color: hasActive ? Colors.grey : const Color(0xFF1A1A1A),
+                              color: hasActive
+                                  ? Colors.grey
+                                  : const Color(0xFF1A1A1A),
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -1222,28 +1487,40 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                             overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 16),
-                          Container(
-                            height: 1,
-                            color: Colors.grey.shade100,
-                          ),
+                          Container(height: 1, color: Colors.grey.shade100),
                           const SizedBox(height: 16),
                           Row(
                             children: [
                               Expanded(
                                 child: Row(
                                   children: [
-                                    const Icon(Icons.explore_outlined, size: 16, color: Colors.grey),
+                                    const Icon(
+                                      Icons.explore_outlined,
+                                      size: 16,
+                                      color: Colors.grey,
+                                    ),
                                     const SizedBox(width: 6),
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         const Text(
                                           'Jarak',
-                                          style: TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.w600),
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                         ),
                                         Text(
                                           '$distance km',
-                                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: hasActive ? Colors.grey : const Color(0xFF1A1A1A)),
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold,
+                                            color: hasActive
+                                                ? Colors.grey
+                                                : const Color(0xFF1A1A1A),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -1253,18 +1530,33 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                               Expanded(
                                 child: Row(
                                   children: [
-                                    const Icon(Icons.scale_outlined, size: 16, color: Colors.grey),
+                                    const Icon(
+                                      Icons.scale_outlined,
+                                      size: 16,
+                                      color: Colors.grey,
+                                    ),
                                     const SizedBox(width: 6),
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         const Text(
                                           'Berat',
-                                          style: TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.w600),
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                         ),
                                         Text(
                                           '${job.estimatedTotalWeight.toInt()} kg',
-                                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: hasActive ? Colors.grey : const Color(0xFF1A1A1A)),
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold,
+                                            color: hasActive
+                                                ? Colors.grey
+                                                : const Color(0xFF1A1A1A),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -1275,10 +1567,16 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                           ),
                           const SizedBox(height: 20),
                           ElevatedButton(
-                            onPressed: hasActive ? null : () => _acceptOrder(job.id),
+                            onPressed: hasActive
+                                ? null
+                                : () => _acceptOrder(job.id),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: hasActive ? Colors.grey.shade300 : const Color(0xFF0F4D19),
-                              foregroundColor: hasActive ? Colors.grey.shade600 : Colors.white,
+                              backgroundColor: hasActive
+                                  ? Colors.grey.shade300
+                                  : const Color(0xFF0F4D19),
+                              foregroundColor: hasActive
+                                  ? Colors.grey.shade600
+                                  : Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -1286,7 +1584,9 @@ class _CourierHomeScreenState extends State<CourierHomeScreen> {
                               elevation: 0,
                             ),
                             child: Text(
-                              hasActive ? 'Tidak Dapat Menerima Tugas Baru' : 'Terima Tugas',
+                              hasActive
+                                  ? 'Tidak Dapat Menerima Tugas Baru'
+                                  : 'Terima Tugas',
                               style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,

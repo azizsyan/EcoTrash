@@ -106,10 +106,15 @@ class CourierProfileModel {
       simNumber: json['sim_number'] ?? '',
       simPhoto: json['sim_photo'],
       rating: double.tryParse(json['rating']?.toString() ?? '0') ?? 0.0,
-      performanceScore: double.tryParse(json['performance_score']?.toString() ?? '0') ?? 0.0,
+      performanceScore:
+          double.tryParse(json['performance_score']?.toString() ?? '0') ?? 0.0,
       isVerified: json['is_verified'] == 1 || json['is_verified'] == true,
-      currentLatitude: double.tryParse(json['current_latitude']?.toString() ?? ''),
-      currentLongitude: double.tryParse(json['current_longitude']?.toString() ?? ''),
+      currentLatitude: double.tryParse(
+        json['current_latitude']?.toString() ?? '',
+      ),
+      currentLongitude: double.tryParse(
+        json['current_longitude']?.toString() ?? '',
+      ),
     );
   }
 }

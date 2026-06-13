@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import '../providers/seller_order_provider.dart';
 import '../../addresses/providers/seller_address_provider.dart';
@@ -37,7 +36,9 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
   TextEditingController _getController(int catId, double currentW) {
     if (!_controllers.containsKey(catId)) {
-      _controllers[catId] = TextEditingController(text: _formatWeight(currentW));
+      _controllers[catId] = TextEditingController(
+        text: _formatWeight(currentW),
+      );
     }
     return _controllers[catId]!;
   }
@@ -60,7 +61,9 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
       });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Total berat > 30 kg. Kendaraan otomatis dialihkan ke EcoCargo.'),
+          content: Text(
+            'Total berat > 30 kg. Kendaraan otomatis dialihkan ke EcoCargo.',
+          ),
           backgroundColor: Colors.blue,
           duration: Duration(seconds: 2),
         ),
@@ -77,7 +80,10 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
           children: [
             Icon(Icons.info_outline, color: Colors.green),
             SizedBox(width: 8),
-            Text('Bagaimana memilih?', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              'Bagaimana memilih?',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ],
         ),
         content: const Column(
@@ -98,7 +104,13 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Mengerti', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+            child: const Text(
+              'Mengerti',
+              style: TextStyle(
+                color: Colors.green,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ],
       ),
@@ -149,15 +161,22 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                       ),
                       const SizedBox(width: 8),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
-                          color: isSelected ? Colors.green : Colors.grey.shade100,
+                          color: isSelected
+                              ? Colors.green
+                              : Colors.grey.shade100,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
                           capacity,
                           style: TextStyle(
-                            color: isSelected ? Colors.white : Colors.grey.shade700,
+                            color: isSelected
+                                ? Colors.white
+                                : Colors.grey.shade700,
                             fontWeight: FontWeight.bold,
                             fontSize: 10,
                           ),
@@ -193,7 +212,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     Future.microtask(() async {
       final addrProvider = context.read<SellerAddressProvider>();
       await addrProvider.fetchAddresses();
-      
+
       // Auto-select default address if exists
       if (addrProvider.addresses.isNotEmpty) {
         setState(() {
@@ -225,7 +244,10 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   Future<void> _submit() async {
     if (_selectedAddress == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Silakan pilih alamat penjemputan terlebih dahulu'), backgroundColor: Colors.orange),
+        const SnackBar(
+          content: Text('Silakan pilih alamat penjemputan terlebih dahulu'),
+          backgroundColor: Colors.orange,
+        ),
       );
       return;
     }
@@ -242,14 +264,24 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
     if (itemsPayload.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Silakan tentukan minimal 1 item sampah dengan berat > 0 kg'), backgroundColor: Colors.orange),
+        const SnackBar(
+          content: Text(
+            'Silakan tentukan minimal 1 item sampah dengan berat > 0 kg',
+          ),
+          backgroundColor: Colors.orange,
+        ),
       );
       return;
     }
 
     if (_totalEstimateWeight > 30 && _selectedVehicleType == 'EcoRide') {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Total berat melebihi 30 kg. Silakan pilih kendaraan EcoCargo.'), backgroundColor: Colors.orange),
+        const SnackBar(
+          content: Text(
+            'Total berat melebihi 30 kg. Silakan pilih kendaraan EcoCargo.',
+          ),
+          backgroundColor: Colors.orange,
+        ),
       );
       return;
     }
@@ -291,9 +323,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     final categories = orderProvider.categories;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Jual Sampah'),
-      ),
+      appBar: AppBar(title: const Text('Jual Sampah')),
       body: orderProvider.isLoading || addrProvider.isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -307,35 +337,46 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                     children: [
                       const Text(
                         'Alamat Penjemputan',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                       TextButton(
                         onPressed: () async {
                           final oldSelectedId = _selectedAddress?.id;
                           await Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const SellerAddressesScreen()),
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const SellerAddressesScreen(),
+                            ),
                           );
                           // Refresh addresses
                           await addrProvider.fetchAddresses();
-                          
+
                           // Re-select matching address object from newly fetched list
-                          if (oldSelectedId != null && addrProvider.addresses.isNotEmpty) {
+                          if (oldSelectedId != null &&
+                              addrProvider.addresses.isNotEmpty) {
                             setState(() {
-                              _selectedAddress = addrProvider.addresses.firstWhere(
-                                (e) => e.id == oldSelectedId,
-                                orElse: () => addrProvider.addresses.firstWhere(
-                                  (e) => e.isDefault,
-                                  orElse: () => addrProvider.addresses.first,
-                                ),
-                              );
+                              _selectedAddress = addrProvider.addresses
+                                  .firstWhere(
+                                    (e) => e.id == oldSelectedId,
+                                    orElse: () =>
+                                        addrProvider.addresses.firstWhere(
+                                          (e) => e.isDefault,
+                                          orElse: () =>
+                                              addrProvider.addresses.first,
+                                        ),
+                                  );
                             });
                           } else if (addrProvider.addresses.isNotEmpty) {
                             setState(() {
-                              _selectedAddress = addrProvider.addresses.firstWhere(
-                                (e) => e.isDefault,
-                                orElse: () => addrProvider.addresses.first,
-                              );
+                              _selectedAddress = addrProvider.addresses
+                                  .firstWhere(
+                                    (e) => e.isDefault,
+                                    orElse: () => addrProvider.addresses.first,
+                                  );
                             });
                           } else {
                             setState(() {
@@ -344,7 +385,10 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                           }
                         },
                         style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
                           backgroundColor: Colors.green.withOpacity(0.08),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
@@ -353,7 +397,11 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: const [
-                            Icon(Icons.edit_location_alt_outlined, size: 14, color: Colors.green),
+                            Icon(
+                              Icons.edit_location_alt_outlined,
+                              size: 14,
+                              color: Colors.green,
+                            ),
                             SizedBox(width: 4),
                             Text(
                               'Kelola',
@@ -376,7 +424,9 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                           decoration: BoxDecoration(
                             color: Colors.red.withOpacity(0.06),
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Colors.red.withOpacity(0.15)),
+                            border: Border.all(
+                              color: Colors.red.withOpacity(0.15),
+                            ),
                           ),
                           child: const Text(
                             'Anda belum membuat alamat. Silakan klik Kelola Alamat untuk menambah alamat penjemputan.',
@@ -384,17 +434,28 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                           ),
                         )
                       : Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Colors.grey.withOpacity(0.2)),
+                            border: Border.all(
+                              color: Colors.grey.withOpacity(0.2),
+                            ),
                           ),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<SellerAddressModel>(
                               isExpanded: true,
-                              value: _selectedAddress != null && addrProvider.addresses.any((e) => e.id == _selectedAddress!.id)
-                                  ? addrProvider.addresses.firstWhere((e) => e.id == _selectedAddress!.id)
+                              value:
+                                  _selectedAddress != null &&
+                                      addrProvider.addresses.any(
+                                        (e) => e.id == _selectedAddress!.id,
+                                      )
+                                  ? addrProvider.addresses.firstWhere(
+                                      (e) => e.id == _selectedAddress!.id,
+                                    )
                                   : null,
                               hint: const Text('Pilih Alamat Penjemputan'),
                               items: addrProvider.addresses.map((addr) {
@@ -426,7 +487,9 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                   ),
                   const SizedBox(height: 12),
                   categories.isEmpty
-                      ? const Center(child: Text('Kategori sampah tidak tersedia'))
+                      ? const Center(
+                          child: Text('Kategori sampah tidak tersedia'),
+                        )
                       : ListView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
@@ -443,16 +506,24 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                                   children: [
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             cat.name,
-                                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15,
+                                            ),
                                           ),
                                           const SizedBox(height: 2),
                                           Text(
-                                            _currencyFormat.format(cat.pricePerKg) + ' / kg',
-                                            style: const TextStyle(color: Colors.green, fontWeight: FontWeight.w600, fontSize: 13),
+                                            '${_currencyFormat.format(cat.pricePerKg)} / kg',
+                                            style: const TextStyle(
+                                              color: Colors.green,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 13,
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -461,25 +532,42 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                                     Row(
                                       children: [
                                         IconButton(
-                                          icon: const Icon(Icons.remove_circle_outline, color: Colors.green),
+                                          icon: const Icon(
+                                            Icons.remove_circle_outline,
+                                            color: Colors.green,
+                                          ),
                                           onPressed: currentW <= 0
                                               ? null
                                               : () {
-                                                  final newW = (currentW - 0.5 < 0) ? 0.0 : (currentW - 0.5);
+                                                  final newW =
+                                                      (currentW - 0.5 < 0)
+                                                      ? 0.0
+                                                      : (currentW - 0.5);
                                                   setState(() {
                                                     _weights[cat.id] = newW;
                                                     _checkWeightLimit();
                                                   });
-                                                  _getController(cat.id, currentW).text = _formatWeight(newW);
+                                                  _getController(
+                                                    cat.id,
+                                                    currentW,
+                                                  ).text = _formatWeight(
+                                                    newW,
+                                                  );
                                                 },
                                         ),
                                         SizedBox(
                                           width: 70,
                                           height: 40,
                                           child: TextField(
-                                            controller: _getController(cat.id, currentW),
+                                            controller: _getController(
+                                              cat.id,
+                                              currentW,
+                                            ),
                                             textAlign: TextAlign.center,
-                                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                            keyboardType:
+                                                const TextInputType.numberWithOptions(
+                                                  decimal: true,
+                                                ),
                                             style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 15,
@@ -488,21 +576,37 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                                             decoration: InputDecoration(
                                               filled: true,
                                               fillColor: Colors.grey.shade50,
-                                              contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                    vertical: 10,
+                                                    horizontal: 4,
+                                                  ),
                                               isDense: true,
                                               hintText: '0',
-                                              hintStyle: const TextStyle(color: Colors.grey, fontWeight: FontWeight.normal),
+                                              hintStyle: const TextStyle(
+                                                color: Colors.grey,
+                                                fontWeight: FontWeight.normal,
+                                              ),
                                               enabledBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(12),
-                                                borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                borderSide: BorderSide(
+                                                  color: Colors.grey.shade300,
+                                                  width: 1,
+                                                ),
                                               ),
                                               focusedBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(12),
-                                                borderSide: const BorderSide(color: Colors.green, width: 1.5),
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                borderSide: const BorderSide(
+                                                  color: Colors.green,
+                                                  width: 1.5,
+                                                ),
                                               ),
                                             ),
                                             onChanged: (val) {
-                                              double parsed = double.tryParse(val) ?? 0.0;
+                                              double parsed =
+                                                  double.tryParse(val) ?? 0.0;
                                               if (parsed < 0) parsed = 0.0;
                                               _weights[cat.id] = parsed;
                                               _checkWeightLimit();
@@ -511,14 +615,22 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                                           ),
                                         ),
                                         IconButton(
-                                          icon: const Icon(Icons.add_circle_outline, color: Colors.green),
+                                          icon: const Icon(
+                                            Icons.add_circle_outline,
+                                            color: Colors.green,
+                                          ),
                                           onPressed: () {
                                             final newW = currentW + 0.5;
                                             setState(() {
                                               _weights[cat.id] = newW;
                                               _checkWeightLimit();
                                             });
-                                            _getController(cat.id, currentW).text = _formatWeight(newW);
+                                            _getController(
+                                              cat.id,
+                                              currentW,
+                                            ).text = _formatWeight(
+                                              newW,
+                                            );
                                           },
                                         ),
                                       ],
@@ -537,11 +649,18 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                     children: [
                       const Text(
                         'Pilih Kendaraan Penjemputan',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                       const SizedBox(width: 4),
                       IconButton(
-                        icon: const Icon(Icons.info_outline, size: 20, color: Colors.grey),
+                        icon: const Icon(
+                          Icons.info_outline,
+                          size: 20,
+                          color: Colors.grey,
+                        ),
                         onPressed: _showVehicleInfoDialog,
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),
@@ -559,7 +678,9 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                       if (_totalEstimateWeight > 30) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Berat sampah > 30 kg. Wajib menggunakan EcoCargo.'),
+                            content: Text(
+                              'Berat sampah > 30 kg. Wajib menggunakan EcoCargo.',
+                            ),
                             backgroundColor: Colors.orange,
                           ),
                         );
@@ -595,7 +716,8 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                     controller: _notesController,
                     maxLines: 2,
                     decoration: const InputDecoration(
-                      hintText: 'Misal: Penjemputan setelah jam 5 sore atau gerbang abu-abu.',
+                      hintText:
+                          'Misal: Penjemputan setelah jam 5 sore atau gerbang abu-abu.',
                     ),
                   ),
 
@@ -614,8 +736,16 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text('Total Estimasi Berat', style: TextStyle(color: Colors.grey)),
-                            Text('${_totalEstimateWeight.toStringAsFixed(1)} kg', style: const TextStyle(fontWeight: FontWeight.bold)),
+                            const Text(
+                              'Total Estimasi Berat',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                            Text(
+                              '${_totalEstimateWeight.toStringAsFixed(1)} kg',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 8),
@@ -626,11 +756,19 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                           children: [
                             const Text(
                               'Estimasi Pendapatan',
-                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.green),
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green,
+                              ),
                             ),
                             Text(
                               _currencyFormat.format(_totalEstimatePrice),
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green),
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green,
+                              ),
                             ),
                           ],
                         ),

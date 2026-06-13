@@ -34,10 +34,14 @@ class SellerWalletProvider extends ChangeNotifier {
       } catch (_) {}
 
       final txData = await _service.getTransactions();
-      _transactions = txData.map((item) => WalletTransactionModel.fromJson(item)).toList();
+      _transactions = txData
+          .map((item) => WalletTransactionModel.fromJson(item))
+          .toList();
 
       final wdData = await _service.getWithdrawals();
-      _withdrawals = wdData.map((item) => WithdrawalModel.fromJson(item)).toList();
+      _withdrawals = wdData
+          .map((item) => WithdrawalModel.fromJson(item))
+          .toList();
 
       notifyListeners();
     } catch (_) {
@@ -64,7 +68,7 @@ class SellerWalletProvider extends ChangeNotifier {
         accountNumber: accountNumber,
         amount: amount,
       );
-      
+
       // Refresh wallet after withdrawal
       await fetchWalletData();
     } catch (_) {

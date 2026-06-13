@@ -15,7 +15,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
 
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
@@ -27,7 +28,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!isAgreed) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Anda harus menyetujui Syarat & Ketentuan serta Kebijakan Privasi.'),
+          content: Text(
+            'Anda harus menyetujui Syarat & Ketentuan serta Kebijakan Privasi.',
+          ),
           backgroundColor: Colors.orange,
         ),
       );
@@ -48,8 +51,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
       if (!mounted) return;
 
       // Successful registration defaults to seller dashboard
-      Navigator.pushNamedAndRemoveUntil(context, '/seller-home', (route) => false);
-      
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/seller-home',
+        (route) => false,
+      );
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Registrasi sukses! Selamat datang di EcoTrash.'),
@@ -134,7 +141,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   borderRadius: BorderRadius.circular(32),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 32,
+                  ),
                   child: Form(
                     key: _formKey,
                     child: Column(
@@ -157,10 +167,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: const Color(0xFFEAF2F7),
-                            prefixIcon: const Icon(Icons.person_outline, color: Colors.grey, size: 20),
+                            prefixIcon: const Icon(
+                              Icons.person_outline,
+                              color: Colors.grey,
+                              size: 20,
+                            ),
                             hintText: 'Masukkan nama lengkap',
                             hintStyle: const TextStyle(color: Colors.grey),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 16,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
                               borderSide: BorderSide.none,
@@ -192,10 +209,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: const Color(0xFFEAF2F7),
-                            prefixIcon: const Icon(Icons.email_outlined, color: Colors.grey, size: 20),
+                            prefixIcon: const Icon(
+                              Icons.email_outlined,
+                              color: Colors.grey,
+                              size: 20,
+                            ),
                             hintText: 'contoh@email.com',
                             hintStyle: const TextStyle(color: Colors.grey),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 16,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
                               borderSide: BorderSide.none,
@@ -205,7 +229,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             if (value == null || value.isEmpty) {
                               return 'Email tidak boleh kosong';
                             }
-                            if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                            if (!RegExp(
+                              r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                            ).hasMatch(value)) {
                               return 'Format email tidak valid';
                             }
                             return null;
@@ -230,10 +256,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: const Color(0xFFEAF2F7),
-                            prefixIcon: const Icon(Icons.phone_outlined, color: Colors.grey, size: 20),
+                            prefixIcon: const Icon(
+                              Icons.phone_outlined,
+                              color: Colors.grey,
+                              size: 20,
+                            ),
                             hintText: '0812xxxxxx',
                             hintStyle: const TextStyle(color: Colors.grey),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 16,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
                               borderSide: BorderSide.none,
@@ -268,10 +301,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: const Color(0xFFEAF2F7),
-                            prefixIcon: const Icon(Icons.lock_outlined, color: Colors.grey, size: 20),
+                            prefixIcon: const Icon(
+                              Icons.lock_outlined,
+                              color: Colors.grey,
+                              size: 20,
+                            ),
                             suffixIcon: IconButton(
                               icon: Icon(
-                                _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                                _obscurePassword
+                                    ? Icons.visibility_off_outlined
+                                    : Icons.visibility_outlined,
                                 color: Colors.grey,
                                 size: 20,
                               ),
@@ -283,7 +322,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             hintText: 'Min. 8 karakter',
                             hintStyle: const TextStyle(color: Colors.grey),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 16,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
                               borderSide: BorderSide.none,
@@ -318,22 +360,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: const Color(0xFFEAF2F7),
-                            prefixIcon: const Icon(Icons.lock_outlined, color: Colors.grey, size: 20),
+                            prefixIcon: const Icon(
+                              Icons.lock_outlined,
+                              color: Colors.grey,
+                              size: 20,
+                            ),
                             suffixIcon: IconButton(
                               icon: Icon(
-                                _obscureConfirmPassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                                _obscureConfirmPassword
+                                    ? Icons.visibility_off_outlined
+                                    : Icons.visibility_outlined,
                                 color: Colors.grey,
                                 size: 20,
                               ),
                               onPressed: () {
                                 setState(() {
-                                  _obscureConfirmPassword = !_obscureConfirmPassword;
+                                  _obscureConfirmPassword =
+                                      !_obscureConfirmPassword;
                                 });
                               },
                             ),
                             hintText: 'Ulangi password',
                             hintStyle: const TextStyle(color: Colors.grey),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 16,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
                               borderSide: BorderSide.none,
@@ -374,17 +426,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             Expanded(
                               child: RichText(
                                 text: const TextSpan(
-                                  style: TextStyle(color: Colors.grey, fontSize: 11, fontFamily: 'Inter'),
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 11,
+                                    fontFamily: 'Inter',
+                                  ),
                                   children: [
                                     TextSpan(text: 'Saya setuju dengan '),
                                     TextSpan(
                                       text: 'Syarat & Ketentuan',
-                                      style: TextStyle(color: Color(0xFF0F4D19), fontWeight: FontWeight.bold),
+                                      style: TextStyle(
+                                        color: Color(0xFF0F4D19),
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                     TextSpan(text: ' serta '),
                                     TextSpan(
                                       text: 'Kebijakan Privasi',
-                                      style: TextStyle(color: Color(0xFF0F4D19), fontWeight: FontWeight.bold),
+                                      style: TextStyle(
+                                        color: Color(0xFF0F4D19),
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                     TextSpan(text: ' EcoTrash.'),
                                   ],
@@ -410,7 +472,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ? const SizedBox(
                                   height: 20,
                                   width: 20,
-                                  child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
                                 )
                               : Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -423,7 +488,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ),
                                     ),
                                     SizedBox(width: 6),
-                                    Icon(Icons.chevron_right, size: 20, color: Colors.white),
+                                    Icon(
+                                      Icons.chevron_right,
+                                      size: 20,
+                                      color: Colors.white,
+                                    ),
                                   ],
                                 ),
                         ),
@@ -435,7 +504,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           children: [
                             const Text(
                               'Sudah punya akun Seller? ',
-                              style: TextStyle(color: Colors.grey, fontSize: 13),
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 13,
+                              ),
                             ),
                             GestureDetector(
                               onTap: () {
@@ -472,33 +544,57 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       // Terverifikasi
                       Row(
                         children: const [
-                          Icon(Icons.check_circle_outline, color: Color(0xFF2E7D32), size: 16),
+                          Icon(
+                            Icons.check_circle_outline,
+                            color: Color(0xFF2E7D32),
+                            size: 16,
+                          ),
                           SizedBox(width: 4),
                           Text(
                             'Terverifikasi',
-                            style: TextStyle(color: Color(0xFF555555), fontSize: 11, fontWeight: FontWeight.w600),
+                            style: TextStyle(
+                              color: Color(0xFF555555),
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ],
                       ),
                       // Ramah Lingkungan
                       Row(
                         children: const [
-                          Icon(Icons.eco_outlined, color: Color(0xFF2E7D32), size: 16),
+                          Icon(
+                            Icons.eco_outlined,
+                            color: Color(0xFF2E7D32),
+                            size: 16,
+                          ),
                           SizedBox(width: 4),
                           Text(
                             'Ramah Lingkungan',
-                            style: TextStyle(color: Color(0xFF555555), fontSize: 11, fontWeight: FontWeight.w600),
+                            style: TextStyle(
+                              color: Color(0xFF555555),
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ],
                       ),
                       // Pencairan Instan
                       Row(
                         children: const [
-                          Icon(Icons.account_balance_wallet_outlined, color: Color(0xFF2E7D32), size: 16),
+                          Icon(
+                            Icons.account_balance_wallet_outlined,
+                            color: Color(0xFF2E7D32),
+                            size: 16,
+                          ),
                           SizedBox(width: 4),
                           Text(
                             'Pencairan Instan',
-                            style: TextStyle(color: Color(0xFF555555), fontSize: 11, fontWeight: FontWeight.w600),
+                            style: TextStyle(
+                              color: Color(0xFF555555),
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ],
                       ),

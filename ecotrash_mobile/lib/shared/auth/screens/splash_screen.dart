@@ -8,20 +8,24 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
   @override
   void initState() {
     super.initState();
-    
+
     // Smooth Fade-in animation
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(_animationController);
 
     _animationController.forward();
     checkSession();
@@ -74,11 +78,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: const [
-              Icon(
-                Icons.recycling, 
-                size: 110, 
-                color: Colors.white
-              ),
+              Icon(Icons.recycling, size: 110, color: Colors.white),
               SizedBox(height: 20),
               Text(
                 'EcoTrash',
@@ -99,10 +99,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 ),
               ),
               SizedBox(height: 60),
-              CircularProgressIndicator(
-                color: Colors.white70,
-                strokeWidth: 3,
-              ),
+              CircularProgressIndicator(color: Colors.white70, strokeWidth: 3),
             ],
           ),
         ),

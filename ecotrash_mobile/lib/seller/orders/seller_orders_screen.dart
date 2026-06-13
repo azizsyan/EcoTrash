@@ -49,8 +49,14 @@ class _SellerOrdersScreenState extends State<SellerOrdersScreen> {
                 onRefresh: _refresh,
                 child: TabBarView(
                   children: [
-                    _buildOrderList(orderProvider.activeOrders, 'Belum ada pesanan aktif.'),
-                    _buildOrderList(orderProvider.historyOrders, 'Belum ada riwayat pesanan.'),
+                    _buildOrderList(
+                      orderProvider.activeOrders,
+                      'Belum ada pesanan aktif.',
+                    ),
+                    _buildOrderList(
+                      orderProvider.historyOrders,
+                      'Belum ada riwayat pesanan.',
+                    ),
                   ],
                 ),
               ),
@@ -66,11 +72,19 @@ class _SellerOrdersScreenState extends State<SellerOrdersScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.receipt_long_outlined, size: 70, color: Colors.grey.withOpacity(0.4)),
+              Icon(
+                Icons.receipt_long_outlined,
+                size: 70,
+                color: Colors.grey.withOpacity(0.4),
+              ),
               const SizedBox(height: 16),
               Text(
                 emptyMessage,
-                style: const TextStyle(color: Colors.grey, fontSize: 15, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
@@ -87,12 +101,16 @@ class _SellerOrdersScreenState extends State<SellerOrdersScreen> {
         return Card(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
           child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 8,
+            ),
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SellerOrderDetailScreen(orderId: order.id),
+                  builder: (context) =>
+                      SellerOrderDetailScreen(orderId: order.id),
                 ),
               );
             },
@@ -102,14 +120,20 @@ class _SellerOrdersScreenState extends State<SellerOrdersScreen> {
                 color: _getStatusBg(order.status),
                 shape: BoxShape.circle,
               ),
-              child: Icon(_getStatusIcon(order.status), color: _getStatusColor(order.status)),
+              child: Icon(
+                _getStatusIcon(order.status),
+                color: _getStatusColor(order.status),
+              ),
             ),
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   order.orderCode,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
                 ),
                 Text(
                   _getStatusLabel(order.status),
@@ -143,7 +167,11 @@ class _SellerOrdersScreenState extends State<SellerOrdersScreen> {
                       order.status == 'COMPLETED'
                           ? 'Total: Rp ${order.totalPrice.toInt()}'
                           : 'Estimasi: Rp ${order.estimatedTotalPrice.toInt()}',
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.black87),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                        color: Colors.black87,
+                      ),
                     ),
                   ],
                 ),

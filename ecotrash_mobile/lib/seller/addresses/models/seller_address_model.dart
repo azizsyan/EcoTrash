@@ -15,25 +15,14 @@ class SellerAddressModel {
     required this.isDefault,
   });
 
-  factory SellerAddressModel.fromJson(
-    Map<String, dynamic> json,
-  ) {
+  factory SellerAddressModel.fromJson(Map<String, dynamic> json) {
     return SellerAddressModel(
       id: json['id'],
       label: json['label'] ?? '',
-      address:
-          json['address'] ?? '',
-      latitude: double.parse(
-        json['latitude']
-            .toString(),
-      ),
-      longitude: double.parse(
-        json['longitude']
-            .toString(),
-      ),
-      isDefault:
-          json['is_default'] ??
-              false,
+      address: json['address'] ?? '',
+      latitude: double.parse(json['latitude'].toString()),
+      longitude: double.parse(json['longitude'].toString()),
+      isDefault: json['is_default'] ?? false,
     );
   }
 

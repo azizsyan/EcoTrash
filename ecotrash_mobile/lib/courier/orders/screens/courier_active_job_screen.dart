@@ -19,7 +19,7 @@ class CourierActiveJobScreen extends StatefulWidget {
 
 class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
   Timer? _locationTimer;
-  
+
   double _courierLat = -7.369;
   double _courierLng = 108.534;
   bool _isDialogOpen = false;
@@ -28,8 +28,10 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      context.read<CourierOrderProvider>().fetchMyCourierJobs();
-      _startLiveTracking();
+      if (mounted) {
+        context.read<CourierOrderProvider>().fetchMyCourierJobs();
+        _startLiveTracking();
+      }
     });
   }
 
@@ -45,32 +47,50 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
       if (perm == LocationPermission.denied) {
         perm = await Geolocator.requestPermission();
       }
-      if (perm == LocationPermission.whileInUse || perm == LocationPermission.always) {
+      if (perm == LocationPermission.whileInUse ||
+          perm == LocationPermission.always) {
+        if (!mounted) return;
         Position pos = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high,
         );
+        if (!mounted) return;
         setState(() {
           _courierLat = pos.latitude;
           _courierLng = pos.longitude;
         });
-        
-        await context.read<CourierOrderProvider>().updateLiveLocation(pos.latitude, pos.longitude);
+
+        if (!mounted) return;
+        await context.read<CourierOrderProvider>().updateLiveLocation(
+          pos.latitude,
+          pos.longitude,
+        );
       }
     } catch (_) {}
 
     _locationTimer = Timer.periodic(const Duration(seconds: 12), (timer) async {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
       try {
         LocationPermission perm = await Geolocator.checkPermission();
-        if (perm == LocationPermission.whileInUse || perm == LocationPermission.always) {
+        if (perm == LocationPermission.whileInUse ||
+            perm == LocationPermission.always) {
+          if (!mounted) return;
           Position pos = await Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.high,
           );
+          if (!mounted) return;
           setState(() {
             _courierLat = pos.latitude;
             _courierLng = pos.longitude;
           });
-          
-          await context.read<CourierOrderProvider>().updateLiveLocation(pos.latitude, pos.longitude);
+
+          if (!mounted) return;
+          await context.read<CourierOrderProvider>().updateLiveLocation(
+            pos.latitude,
+            pos.longitude,
+          );
         }
       } catch (_) {}
     });
@@ -78,7 +98,7 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
 
   Future<void> _pickup(OrderModel order) async {
     final ImagePicker picker = ImagePicker();
-    
+
     final ImageSource? source = await showModalBottomSheet<ImageSource>(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -114,9 +134,19 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
                         ),
                         child: Column(
                           children: const [
-                            Icon(Icons.camera_alt_rounded, color: Color(0xFF0F4D19), size: 32),
+                            Icon(
+                              Icons.camera_alt_rounded,
+                              color: Color(0xFF0F4D19),
+                              size: 32,
+                            ),
                             SizedBox(height: 8),
-                            Text('Kamera', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                            Text(
+                              'Kamera',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -135,9 +165,19 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
                         ),
                         child: Column(
                           children: const [
-                            Icon(Icons.photo_library_rounded, color: Color(0xFF0F4D19), size: 32),
+                            Icon(
+                              Icons.photo_library_rounded,
+                              color: Color(0xFF0F4D19),
+                              size: 32,
+                            ),
                             SizedBox(height: 8),
-                            Text('Galeri', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                            Text(
+                              'Galeri',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -166,7 +206,10 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
       await provider.pickupJob(order.id, bytes, image.name);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Foto penjemputan di-upload! Sampah siap dikirim.'), backgroundColor: Colors.green),
+          const SnackBar(
+            content: Text('Foto penjemputan di-upload! Sampah siap dikirim.'),
+            backgroundColor: Colors.green,
+          ),
         );
       }
     } catch (e) {
@@ -184,7 +227,10 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
       await provider.deliverJob(order.id);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Sampah terkirim ke gudang! Lakukan penimbangan.'), backgroundColor: Colors.green),
+          const SnackBar(
+            content: Text('Sampah terkirim ke gudang! Lakukan penimbangan.'),
+            backgroundColor: Colors.green,
+          ),
         );
       }
     } catch (e) {
@@ -196,24 +242,47 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
     }
   }
 
-  double _getJobDistance(Map<String, dynamic>? courierProfile, double jobLat, double jobLon) {
+  double _getJobDistance(
+    Map<String, dynamic>? courierProfile,
+    double jobLat,
+    double jobLon,
+  ) {
     if (courierProfile == null) return 2.5;
-    final cLat = double.tryParse(courierProfile['current_latitude']?.toString() ?? '0') ?? 0.0;
-    final cLon = double.tryParse(courierProfile['current_longitude']?.toString() ?? '0') ?? 0.0;
+    final cLat =
+        double.tryParse(
+          courierProfile['current_latitude']?.toString() ?? '0',
+        ) ??
+        0.0;
+    final cLon =
+        double.tryParse(
+          courierProfile['current_longitude']?.toString() ?? '0',
+        ) ??
+        0.0;
     if (cLat == 0.0 || cLon == 0.0) {
-      return double.tryParse(((jobLat - 6.2).abs() * 10 + 1.2).toStringAsFixed(1)) ?? 2.5;
+      return double.tryParse(
+            ((jobLat - 6.2).abs() * 10 + 1.2).toStringAsFixed(1),
+          ) ??
+          2.5;
     }
     final dist = _calculateDistance(cLat, cLon, jobLat, jobLon);
     return double.tryParse(dist.toStringAsFixed(1)) ?? 2.5;
   }
 
-  double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+  double _calculateDistance(
+    double lat1,
+    double lon1,
+    double lat2,
+    double lon2,
+  ) {
     const r = 6371; // Earth radius in km
     final dLat = _degToRad(lat2 - lat1);
     final dLon = _degToRad(lon2 - lon1);
-    final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
-        math.cos(_degToRad(lat1)) * math.cos(_degToRad(lat2)) *
-        math.sin(dLon / 2) * math.sin(dLon / 2);
+    final a =
+        math.sin(dLat / 2) * math.sin(dLat / 2) +
+        math.cos(_degToRad(lat1)) *
+            math.cos(_degToRad(lat2)) *
+            math.sin(dLon / 2) *
+            math.sin(dLon / 2);
     final c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
     return r * c;
   }
@@ -225,7 +294,9 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
   void _completeCheckout(OrderModel order) {
     final Map<int, TextEditingController> textControllers = {};
     for (var item in order.items) {
-      textControllers[item.id] = TextEditingController(text: item.estimatedWeight.toString());
+      textControllers[item.id] = TextEditingController(
+        text: item.estimatedWeight.toString(),
+      );
     }
 
     setState(() {
@@ -237,7 +308,9 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
       barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
           title: const Text(
             'Konfirmasi Timbangan Gudang',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -249,7 +322,11 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
               children: [
                 const Text(
                   'Masukkan berat timbangan aktual dari gudang untuk menyelesaikan pembayaran.',
-                  style: TextStyle(fontSize: 12, color: Colors.grey, height: 1.4),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                    height: 1.4,
+                  ),
                 ),
                 const SizedBox(height: 20),
                 ...order.items.map((item) {
@@ -257,17 +334,36 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
                     padding: const EdgeInsets.only(bottom: 16),
                     child: TextFormField(
                       controller: textControllers[item.id],
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       decoration: InputDecoration(
-                        labelText: '${item.wasteCategory?.name ?? "Sampah"} (kg)',
-                        labelStyle: const TextStyle(fontSize: 13, color: Colors.grey, fontWeight: FontWeight.w600),
+                        labelText:
+                            '${item.wasteCategory?.name ?? "Sampah"} (kg)',
+                        labelStyle: const TextStyle(
+                          fontSize: 13,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w600,
+                        ),
                         suffixIcon: const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                          child: Text('kg', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
+                          ),
+                          child: Text(
+                            'kg',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                            ),
+                          ),
                         ),
                         filled: true,
                         fillColor: Colors.grey.shade50,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide(color: Colors.grey.shade300),
@@ -278,16 +374,23 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Color(0xFF0F4D19), width: 1.5),
+                          borderSide: const BorderSide(
+                            color: Color(0xFF0F4D19),
+                            width: 1.5,
+                          ),
                         ),
                       ),
                     ),
                   );
-                }).toList(),
+                }),
               ],
             ),
           ),
-          actionsPadding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+          actionsPadding: const EdgeInsets.only(
+            left: 20,
+            right: 20,
+            bottom: 20,
+          ),
           actions: [
             TextButton(
               onPressed: () {
@@ -296,34 +399,44 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text('Batal', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
+              child: const Text(
+                'Batal',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF0F4D19),
                 foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 minimumSize: const Size(120, 44),
                 elevation: 0,
               ),
               onPressed: () async {
                 final payload = <Map<String, dynamic>>[];
                 bool valid = true;
-                
+
                 textControllers.forEach((itemId, controller) {
                   final w = double.tryParse(controller.text) ?? 0.0;
                   if (w <= 0) {
                     valid = false;
                   }
-                  payload.add({
-                    'order_item_id': itemId,
-                    'actual_weight': w,
-                  });
+                  payload.add({'order_item_id': itemId, 'actual_weight': w});
                 });
 
                 if (!valid) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Berat aktual harus berupa angka desimal > 0'), backgroundColor: Colors.orange),
+                    const SnackBar(
+                      content: Text(
+                        'Berat aktual harus berupa angka desimal > 0',
+                      ),
+                      backgroundColor: Colors.orange,
+                    ),
                   );
                   return;
                 }
@@ -335,17 +448,27 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
                   });
                   final provider = context.read<CourierOrderProvider>();
                   await provider.completeJob(order.id, payload);
-                  
+
                   if (mounted) {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Tugas selesai! Transaksi dompet dikirim ke seller.'), backgroundColor: Colors.green),
+                      const SnackBar(
+                        content: Text(
+                          'Tugas selesai! Transaksi dompet dikirim ke seller.',
+                        ),
+                        backgroundColor: Colors.green,
+                      ),
                     );
                   }
                 } catch (e) {
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(e.toString().replaceAll('Exception:', '').trim()), backgroundColor: Colors.red),
+                      SnackBar(
+                        content: Text(
+                          e.toString().replaceAll('Exception:', '').trim(),
+                        ),
+                        backgroundColor: Colors.red,
+                      ),
                     );
                   }
                 }
@@ -362,7 +485,7 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
   Widget build(BuildContext context) {
     final courierProvider = context.watch<CourierOrderProvider>();
     final authProvider = context.watch<AuthProvider>();
-    
+
     final activeJob = courierProvider.activeJob;
     final user = authProvider.user;
     final courierProfile = user?['courier_profile'];
@@ -370,7 +493,9 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
     if (activeJob == null || activeJob.id != widget.orderId) {
       return Scaffold(
         appBar: AppBar(title: const Text('Alur Tugas')),
-        body: const Center(child: Text('Tugas tidak ditemukan atau sudah selesai')),
+        body: const Center(
+          child: Text('Tugas tidak ditemukan atau sudah selesai'),
+        ),
       );
     }
 
@@ -378,8 +503,13 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
     final sellerLng = activeJob.longitude;
 
     // Resolve vehicle details
-    final vehicleTypeRaw = activeJob.vehicleType?.toString().toLowerCase() ?? '';
-    final isCar = vehicleTypeRaw.contains('mobil') || vehicleTypeRaw.contains('cargo') || vehicleTypeRaw.contains('car') || vehicleTypeRaw.contains('drive');
+    final vehicleTypeRaw =
+        activeJob.vehicleType?.toString().toLowerCase() ?? '';
+    final isCar =
+        vehicleTypeRaw.contains('mobil') ||
+        vehicleTypeRaw.contains('cargo') ||
+        vehicleTypeRaw.contains('car') ||
+        vehicleTypeRaw.contains('drive');
 
     // Calculate dynamic distance and mocked duration
     final distance = _getJobDistance(courierProfile, sellerLat, sellerLng);
@@ -400,7 +530,11 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
         backgroundColor: Colors.white,
         elevation: 0.5,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF0F4D19), size: 20),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Color(0xFF0F4D19),
+            size: 20,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -427,7 +561,10 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
                   left: 20,
                   right: 20,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16),
@@ -447,7 +584,11 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
                             color: Color(0xFFE8F5E9),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.location_on_outlined, color: Color(0xFF2E7D32), size: 20),
+                          child: const Icon(
+                            Icons.location_on_outlined,
+                            color: Color(0xFF2E7D32),
+                            size: 20,
+                          ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -456,12 +597,20 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
                             children: [
                               const Text(
                                 'Destination',
-                                style: TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               const SizedBox(height: 2),
                               Text(
                                 activeJob.sellerAddress?.address ?? '-',
-                                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF1A1A1A)),
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF1A1A1A),
+                                ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -479,7 +628,10 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
                   right: 0,
                   child: Center(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
@@ -549,7 +701,11 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
                             const CircleAvatar(
                               radius: 20,
                               backgroundColor: Color(0xFFE8F5E9),
-                              child: Icon(Icons.person_outline_rounded, color: Color(0xFF2E7D32), size: 24),
+                              child: Icon(
+                                Icons.person_outline_rounded,
+                                color: Color(0xFF2E7D32),
+                                size: 24,
+                              ),
                             ),
                             const SizedBox(width: 14),
                             Expanded(
@@ -558,12 +714,19 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
                                 children: [
                                   Text(
                                     activeJob.seller?.name ?? 'Seller EcoTrash',
-                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF1A1A1A)),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: Color(0xFF1A1A1A),
+                                    ),
                                   ),
                                   const SizedBox(height: 2),
                                   const Text(
                                     'Penjual Sampah',
-                                    style: TextStyle(fontSize: 11, color: Colors.grey),
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.grey,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -576,18 +739,29 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
 
                         const Text(
                           'Alamat Penjual',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Colors.grey),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 11,
+                            color: Colors.grey,
+                          ),
                         ),
                         const SizedBox(height: 6),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Icon(Icons.location_on_outlined, size: 18, color: Colors.grey),
+                            const Icon(
+                              Icons.location_on_outlined,
+                              size: 18,
+                              color: Colors.grey,
+                            ),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
                                 activeJob.sellerAddress?.address ?? '-',
-                                style: const TextStyle(fontSize: 13, color: Color(0xFF424242)),
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: Color(0xFF424242),
+                                ),
                               ),
                             ),
                           ],
@@ -596,13 +770,19 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
 
                         const Text(
                           'Kendaraan',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Colors.grey),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 11,
+                            color: Colors.grey,
+                          ),
                         ),
                         const SizedBox(height: 6),
                         Row(
                           children: [
                             Icon(
-                              isCar ? Icons.local_shipping_outlined : Icons.motorcycle_outlined,
+                              isCar
+                                  ? Icons.local_shipping_outlined
+                                  : Icons.motorcycle_outlined,
                               size: 18,
                               color: Colors.grey,
                             ),
@@ -612,19 +792,24 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
-                                color: isCar ? Colors.blue.shade700 : Colors.orange.shade800,
+                                color: isCar
+                                    ? Colors.blue.shade700
+                                    : Colors.orange.shade800,
                               ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 16),
 
-                        if (activeJob.pickupNotes != null && activeJob.pickupNotes!.isNotEmpty) ...[
+                        if (activeJob.pickupNotes != null &&
+                            activeJob.pickupNotes!.isNotEmpty) ...[
                           Container(
                             width: double.infinity,
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFFFBF7), // Soft orange/yellow background
+                              color: const Color(
+                                0xFFFFFBF7,
+                              ), // Soft orange/yellow background
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Column(
@@ -632,7 +817,11 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
                               children: [
                                 const Text(
                                   'Catatan Seller',
-                                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.orange),
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.orange,
+                                  ),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
@@ -670,17 +859,28 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
                           children: [
                             const Text(
                               'Daftar Sampah Diminta',
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF1A1A1A)),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                color: Color(0xFF1A1A1A),
+                              ),
                             ),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
                                 color: Colors.grey.shade100,
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
                                 '${activeJob.items.length} Items',
-                                style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey),
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey,
+                                ),
                               ),
                             ),
                           ],
@@ -697,22 +897,34 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
                             ),
                             child: Row(
                               children: [
-                                const Icon(Icons.check_circle_rounded, color: Color(0xFF0F4D19), size: 18),
+                                const Icon(
+                                  Icons.check_circle_rounded,
+                                  color: Color(0xFF0F4D19),
+                                  size: 18,
+                                ),
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: Text(
                                     item.wasteCategory?.name ?? 'Sampah',
-                                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF1A1A1A)),
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xFF1A1A1A),
+                                    ),
                                   ),
                                 ),
                                 Text(
                                   '${item.estimatedWeight} kg',
-                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF1A1A1A)),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13,
+                                    color: Color(0xFF1A1A1A),
+                                  ),
                                 ),
                               ],
                             ),
                           );
-                        }).toList(),
+                        }),
                         const SizedBox(height: 10),
                         Container(height: 1, color: Colors.grey.shade100),
                         const SizedBox(height: 14),
@@ -721,11 +933,19 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
                           children: [
                             const Text(
                               'TOTAL MUATAN',
-                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.blueGrey),
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blueGrey,
+                              ),
                             ),
                             Text(
                               '${activeJob.estimatedTotalWeight.toInt()} kg',
-                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: Color(0xFF0F4D19)),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w800,
+                                color: Color(0xFF0F4D19),
+                              ),
                             ),
                           ],
                         ),
@@ -740,7 +960,12 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
         ],
       ),
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.only(left: 24, right: 24, bottom: 24, top: 12),
+        padding: const EdgeInsets.only(
+          left: 24,
+          right: 24,
+          bottom: 24,
+          top: 12,
+        ),
         decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: [
@@ -784,9 +1009,7 @@ class _CourierActiveJobScreenState extends State<CourierActiveJobScreen> {
         backgroundColor: buttonColor,
         foregroundColor: Colors.white,
         minimumSize: const Size(double.infinity, 50),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         elevation: 0,
       ),
       icon: Icon(icon, size: 20),

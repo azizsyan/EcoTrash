@@ -6,7 +6,9 @@ import '../../shared/storage/secure_storage.dart';
 class DioClient {
   static final DioClient _instance = DioClient._internal();
   late final Dio dio;
-  String _currentBaseUrl = kIsWeb ? 'http://127.0.0.1:8000/api' : 'http://10.0.2.2:8000/api'; // Fallback default for android emulator / web
+  String _currentBaseUrl = kIsWeb
+      ? 'http://127.0.0.1:8000/api'
+      : 'http://10.0.2.2:8000/api'; // Fallback default for android emulator / web
 
   factory DioClient() {
     return _instance;
@@ -39,7 +41,7 @@ class DioClient {
           if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
           }
-          
+
           return handler.next(options);
         },
         onError: (DioException e, handler) {
@@ -55,7 +57,7 @@ class DioClient {
           } else if (e.type == DioExceptionType.receiveTimeout) {
             errorMessage = 'Respon dari server timeout';
           }
-          
+
           // Re-wrap error message into customized DioException message
           final customError = DioException(
             requestOptions: e.requestOptions,
@@ -64,7 +66,7 @@ class DioClient {
             error: errorMessage,
             message: errorMessage,
           );
-          
+
           return handler.next(customError);
         },
       ),

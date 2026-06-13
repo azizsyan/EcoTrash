@@ -70,7 +70,10 @@ class _CourierMapWidgetState extends State<CourierMapWidget> {
           bottom: 16,
           right: 16,
           child: Container(
-            decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+            ),
             child: IconButton(
               icon: const Icon(Icons.my_location, color: Colors.green),
               onPressed: () {
@@ -78,12 +81,20 @@ class _CourierMapWidgetState extends State<CourierMapWidget> {
                   CameraUpdate.newLatLngBounds(
                     LatLngBounds(
                       southwest: LatLng(
-                        widget.courierLat < widget.sellerLat ? widget.courierLat : widget.sellerLat,
-                        widget.courierLng < widget.sellerLng ? widget.courierLng : widget.sellerLng,
+                        widget.courierLat < widget.sellerLat
+                            ? widget.courierLat
+                            : widget.sellerLat,
+                        widget.courierLng < widget.sellerLng
+                            ? widget.courierLng
+                            : widget.sellerLng,
                       ),
                       northeast: LatLng(
-                        widget.courierLat > widget.sellerLat ? widget.courierLat : widget.sellerLat,
-                        widget.courierLng > widget.sellerLng ? widget.courierLng : widget.sellerLng,
+                        widget.courierLat > widget.sellerLat
+                            ? widget.courierLat
+                            : widget.sellerLat,
+                        widget.courierLng > widget.sellerLng
+                            ? widget.courierLng
+                            : widget.sellerLng,
                       ),
                     ),
                     60, // Padding

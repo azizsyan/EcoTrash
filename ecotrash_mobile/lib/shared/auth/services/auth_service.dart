@@ -123,17 +123,10 @@ class AuthService {
         response = await _dio.post(
           '/profile',
           data: formData,
-          options: Options(
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          ),
+          options: Options(headers: {'Content-Type': 'multipart/form-data'}),
         );
       } else {
-        response = await _dio.patch(
-          '/profile',
-          data: fields,
-        );
+        response = await _dio.patch('/profile', data: fields);
       }
       return response.data;
     } on DioException catch (e) {

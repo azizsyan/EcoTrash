@@ -18,7 +18,9 @@ class SellerNotificationProvider extends ChangeNotifier {
       notifyListeners();
 
       final list = await _service.getNotifications();
-      _notifications = list.map((item) => NotificationModel.fromJson(item)).toList();
+      _notifications = list
+          .map((item) => NotificationModel.fromJson(item))
+          .toList();
 
       _unreadCount = await _service.getUnreadCount();
       notifyListeners();
@@ -33,7 +35,7 @@ class SellerNotificationProvider extends ChangeNotifier {
   Future<void> markAsRead(int id) async {
     try {
       await _service.markAsRead(id);
-      
+
       // Update local state
       final index = _notifications.indexWhere((n) => n.id == id);
       if (index != -1) {
@@ -49,7 +51,7 @@ class SellerNotificationProvider extends ChangeNotifier {
           createdAt: current.createdAt,
         );
       }
-      
+
       _unreadCount = await _service.getUnreadCount();
       notifyListeners();
     } catch (_) {}
@@ -58,7 +60,7 @@ class SellerNotificationProvider extends ChangeNotifier {
   Future<void> markAllAsRead() async {
     try {
       await _service.markAllAsRead();
-      
+
       // Mark all local as read
       _notifications = _notifications.map((n) {
         return NotificationModel(
@@ -72,7 +74,7 @@ class SellerNotificationProvider extends ChangeNotifier {
           createdAt: n.createdAt,
         );
       }).toList();
-      
+
       _unreadCount = 0;
       notifyListeners();
     } catch (_) {}

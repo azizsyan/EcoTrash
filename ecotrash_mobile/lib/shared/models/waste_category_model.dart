@@ -20,7 +20,8 @@ class WasteCategoryModel {
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
       slug: json['slug'] ?? '',
-      pricePerKg: double.tryParse(json['price_per_kg']?.toString() ?? '0') ?? 0.0,
+      pricePerKg:
+          double.tryParse(json['price_per_kg']?.toString() ?? '0') ?? 0.0,
       description: json['description'],
       unit: json['unit'] ?? 'kg',
     );

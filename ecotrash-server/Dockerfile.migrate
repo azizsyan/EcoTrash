@@ -1,0 +1,21 @@
+FROM php:8.4-cli-alpine
+
+# Install build dependencies
+RUN apk add --no-cache \
+    postgresql-client \
+    postgresql-dev \
+    && docker-php-ext-install pdo pdo_pgsql \
+    && apk del postgresql-dev
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+WORKDIR /app
+COPY . .
+
+# Install Laravel dependencies
+RUN composer install --no-interaction --optimize-autoloader
+
+# Set entrypoint untuk run migrations
+ENTRYPOINT ["php", "artisan"]
+CMD ["migrate", "--force"]

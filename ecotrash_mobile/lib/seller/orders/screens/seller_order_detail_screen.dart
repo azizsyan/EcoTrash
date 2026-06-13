@@ -11,7 +11,8 @@ class SellerOrderDetailScreen extends StatefulWidget {
   const SellerOrderDetailScreen({super.key, required this.orderId});
 
   @override
-  State<SellerOrderDetailScreen> createState() => _SellerOrderDetailScreenState();
+  State<SellerOrderDetailScreen> createState() =>
+      _SellerOrderDetailScreenState();
 }
 
 class _SellerOrderDetailScreenState extends State<SellerOrderDetailScreen> {
@@ -35,7 +36,9 @@ class _SellerOrderDetailScreenState extends State<SellerOrderDetailScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           title: const Text('Batalkan Pesanan'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -66,23 +69,35 @@ class _SellerOrderDetailScreenState extends State<SellerOrderDetailScreen> {
                 final reason = reasonController.text.trim();
                 if (reason.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Alasan pembatalan harus diisi'), backgroundColor: Colors.red),
+                    const SnackBar(
+                      content: Text('Alasan pembatalan harus diisi'),
+                      backgroundColor: Colors.red,
+                    ),
                   );
                   return;
                 }
 
                 try {
                   Navigator.pop(context);
-                  await context.read<SellerOrderProvider>().cancelOrder(order.id, reason);
+                  await context.read<SellerOrderProvider>().cancelOrder(
+                    order.id,
+                    reason,
+                  );
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Pesanan berhasil dibatalkan'), backgroundColor: Colors.green),
+                      const SnackBar(
+                        content: Text('Pesanan berhasil dibatalkan'),
+                        backgroundColor: Colors.green,
+                      ),
                     );
                   }
                 } catch (e) {
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
+                      SnackBar(
+                        content: Text(e.toString()),
+                        backgroundColor: Colors.red,
+                      ),
                     );
                   }
                 }
@@ -114,7 +129,7 @@ class _SellerOrderDetailScreenState extends State<SellerOrderDetailScreen> {
   Widget build(BuildContext context) {
     final orderProvider = context.watch<SellerOrderProvider>();
     final orderList = orderProvider.orders.where((o) => o.id == widget.orderId);
-    
+
     if (orderList.isEmpty) {
       return Scaffold(
         appBar: AppBar(title: const Text('Detail Pesanan')),
@@ -125,9 +140,7 @@ class _SellerOrderDetailScreenState extends State<SellerOrderDetailScreen> {
     final order = orderList.first;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Detail Pesanan'),
-      ),
+      appBar: AppBar(title: const Text('Detail Pesanan')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -149,10 +162,16 @@ class _SellerOrderDetailScreenState extends State<SellerOrderDetailScreen> {
                     children: [
                       Text(
                         order.orderCode,
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
                           color: _getStatusBg(order.status),
                           borderRadius: BorderRadius.circular(12),
@@ -171,7 +190,11 @@ class _SellerOrderDetailScreenState extends State<SellerOrderDetailScreen> {
                   const SizedBox(height: 16),
                   const Text(
                     'Tahapan Status Penjemputan:',
-                    style: TextStyle(fontSize: 12, color: Colors.grey, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 12),
                   // Live Tracker Step Indicators
@@ -184,14 +207,22 @@ class _SellerOrderDetailScreenState extends State<SellerOrderDetailScreen> {
                     children: [
                       const Text(
                         'Kendaraan Penjemputan',
-                        style: TextStyle(fontSize: 12, color: Colors.grey, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Text(
-                        order.vehicleType == 'EcoCargo' ? 'EcoCargo' : 'EcoRide',
+                        order.vehicleType == 'EcoCargo'
+                            ? 'EcoCargo'
+                            : 'EcoRide',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
-                          color: order.vehicleType == 'EcoCargo' ? Colors.blue.shade700 : Colors.orange.shade800,
+                          color: order.vehicleType == 'EcoCargo'
+                              ? Colors.blue.shade700
+                              : Colors.orange.shade800,
                         ),
                       ),
                     ],
@@ -222,7 +253,11 @@ class _SellerOrderDetailScreenState extends State<SellerOrderDetailScreen> {
                           color: Colors.green.withOpacity(0.1),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.person, color: Colors.green, size: 30),
+                        child: const Icon(
+                          Icons.person,
+                          color: Colors.green,
+                          size: 30,
+                        ),
                       ),
                       const SizedBox(width: 14),
                       Expanded(
@@ -233,16 +268,26 @@ class _SellerOrderDetailScreenState extends State<SellerOrderDetailScreen> {
                               children: [
                                 Text(
                                   order.courier!.name,
-                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
                                 ),
                                 const SizedBox(width: 4),
-                                const Icon(Icons.verified, color: Colors.blue, size: 16),
+                                const Icon(
+                                  Icons.verified,
+                                  color: Colors.blue,
+                                  size: 16,
+                                ),
                               ],
                             ),
                             const SizedBox(height: 2),
                             Text(
                               'Plat: ${order.courier!.courierProfile?.vehiclePlate ?? "-"} (${order.courier!.courierProfile?.vehicleType ?? "-"})',
-                              style: const TextStyle(fontSize: 12, color: Colors.grey),
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey,
+                              ),
                             ),
                           ],
                         ),
@@ -270,7 +315,7 @@ class _SellerOrderDetailScreenState extends State<SellerOrderDetailScreen> {
                   image: DecorationImage(
                     image: NetworkImage(
                       // Prepend backend baseUrl with storage-proxy to bypass CORS policy
-                      DioClient().baseUrl + '/storage-proxy/' + order.pickupPhoto!,
+                      '${DioClient().baseUrl}/storage-proxy/${order.pickupPhoto!}',
                     ),
                     fit: BoxFit.cover,
                   ),
@@ -300,13 +345,19 @@ class _SellerOrderDetailScreenState extends State<SellerOrderDetailScreen> {
                     itemCount: order.items.length,
                     itemBuilder: (context, index) {
                       final item = order.items[index];
-                      final catName = item.wasteCategory?.name ?? 'Kategori sampah';
+                      final catName =
+                          item.wasteCategory?.name ?? 'Kategori sampah';
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 6),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(catName, style: const TextStyle(fontWeight: FontWeight.bold)),
+                            Text(
+                              catName,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
@@ -318,7 +369,10 @@ class _SellerOrderDetailScreenState extends State<SellerOrderDetailScreen> {
                                 ),
                                 Text(
                                   _currencyFormat.format(item.subtotal),
-                                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                               ],
                             ),
@@ -332,12 +386,22 @@ class _SellerOrderDetailScreenState extends State<SellerOrderDetailScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Total Pendapatan', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                      const Text(
+                        'Total Pendapatan',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
                       Text(
                         order.status == 'COMPLETED'
                             ? _currencyFormat.format(order.totalPrice)
-                            : _currencyFormat.format(order.estimatedTotalPrice) + ' (Est)',
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.green),
+                            : '${_currencyFormat.format(order.estimatedTotalPrice)} (Est)',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.green,
+                        ),
                       ),
                     ],
                   ),
@@ -374,9 +438,18 @@ class _SellerOrderDetailScreenState extends State<SellerOrderDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Alasan Pembatalan:', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+                    const Text(
+                      'Alasan Pembatalan:',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                      ),
+                    ),
                     const SizedBox(height: 4),
-                    Text(order.cancelReason!, style: const TextStyle(color: Colors.red, fontSize: 13)),
+                    Text(
+                      order.cancelReason!,
+                      style: const TextStyle(color: Colors.red, fontSize: 13),
+                    ),
                   ],
                 ),
               ),
@@ -405,7 +478,13 @@ class _SellerOrderDetailScreenState extends State<SellerOrderDetailScreen> {
   }
 
   Widget _buildTrackerTimeline(String currentStatus) {
-    final stages = ['PENDING', 'ACCEPTED', 'PICKED_UP', 'DELIVERED', 'COMPLETED'];
+    final stages = [
+      'PENDING',
+      'ACCEPTED',
+      'PICKED_UP',
+      'DELIVERED',
+      'COMPLETED',
+    ];
     final labels = ['Menunggu', 'Diterima', 'Diambil', 'Gudang', 'Selesai'];
 
     int activeIndex = stages.indexOf(currentStatus);
@@ -418,7 +497,7 @@ class _SellerOrderDetailScreenState extends State<SellerOrderDetailScreen> {
       children: List.generate(stages.length, (index) {
         final isDone = activeIndex >= index;
         final isCurrent = activeIndex == index;
-        
+
         return Column(
           children: [
             Container(
@@ -427,8 +506,8 @@ class _SellerOrderDetailScreenState extends State<SellerOrderDetailScreen> {
                 color: isDone
                     ? Colors.green
                     : isCurrent
-                        ? Colors.green.withOpacity(0.2)
-                        : Colors.grey.withOpacity(0.1),
+                    ? Colors.green.withOpacity(0.2)
+                    : Colors.grey.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(

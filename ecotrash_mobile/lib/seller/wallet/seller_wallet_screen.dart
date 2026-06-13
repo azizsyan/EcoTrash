@@ -73,9 +73,7 @@ class _SellerWalletScreenState extends State<SellerWalletScreen> {
     combinedList.sort((a, b) => b['date'].compareTo(a['date']));
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dompet Saya'),
-      ),
+      appBar: AppBar(title: const Text('Dompet Saya')),
       body: walletProvider.isLoading
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
@@ -110,26 +108,39 @@ class _SellerWalletScreenState extends State<SellerWalletScreen> {
                         children: [
                           const Text(
                             'Total Saldo Dapat Ditarik',
-                            style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           const SizedBox(height: 6),
                           Text(
                             _currencyFormat.format(walletProvider.balance),
-                            style: const TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 26,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           const SizedBox(height: 20),
                           ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
                               foregroundColor: Colors.green,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
                             ),
                             icon: const Icon(Icons.account_balance),
                             label: const Text('Tarik Saldo Rekening'),
                             onPressed: () async {
                               await Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => const WithdrawalScreen()),
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const WithdrawalScreen(),
+                                ),
                               );
                               // Refresh wallet balance on back
                               await walletProvider.fetchWalletData();
@@ -144,7 +155,10 @@ class _SellerWalletScreenState extends State<SellerWalletScreen> {
                     // Transaction Logs Header
                     const Text(
                       'Riwayat Transaksi Dompet',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
                     const SizedBox(height: 12),
 
@@ -154,9 +168,19 @@ class _SellerWalletScreenState extends State<SellerWalletScreen> {
                               padding: const EdgeInsets.symmetric(vertical: 40),
                               child: Column(
                                 children: [
-                                  Icon(Icons.receipt_long_outlined, size: 54, color: Colors.grey.withOpacity(0.4)),
+                                  Icon(
+                                    Icons.receipt_long_outlined,
+                                    size: 54,
+                                    color: Colors.grey.withOpacity(0.4),
+                                  ),
                                   const SizedBox(height: 12),
-                                  const Text('Belum ada transaksi dompet.', style: TextStyle(color: Colors.grey, fontSize: 13)),
+                                  const Text(
+                                    'Belum ada transaksi dompet.',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 13,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -167,22 +191,28 @@ class _SellerWalletScreenState extends State<SellerWalletScreen> {
                             itemCount: combinedList.length,
                             itemBuilder: (context, index) {
                               final item = combinedList[index];
-                              
+
                               if (item['isWithdrawal'] == true) {
                                 final wd = item['raw'];
                                 return Card(
                                   margin: const EdgeInsets.only(bottom: 10),
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 12,
+                                    ),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Row(
                                           children: [
                                             Container(
                                               padding: const EdgeInsets.all(10),
                                               decoration: BoxDecoration(
-                                                color: Colors.red.withOpacity(0.1),
+                                                color: Colors.red.withOpacity(
+                                                  0.1,
+                                                ),
                                                 shape: BoxShape.circle,
                                               ),
                                               child: const Icon(
@@ -194,33 +224,58 @@ class _SellerWalletScreenState extends State<SellerWalletScreen> {
                                             const SizedBox(width: 16),
                                             Expanded(
                                               child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
                                                     'Tarik Saldo (${wd.bankName})',
-                                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                                    style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 14,
+                                                    ),
                                                     maxLines: 1,
-                                                    overflow: TextOverflow.ellipsis,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
                                                   const SizedBox(height: 4),
                                                   Row(
                                                     children: [
                                                       Text(
-                                                        wd.createdAt.split('T').first,
-                                                        style: const TextStyle(fontSize: 11, color: Colors.grey),
+                                                        wd.createdAt
+                                                            .split('T')
+                                                            .first,
+                                                        style: const TextStyle(
+                                                          fontSize: 11,
+                                                          color: Colors.grey,
+                                                        ),
                                                       ),
                                                       const SizedBox(width: 8),
                                                       Container(
-                                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                                        padding:
+                                                            const EdgeInsets.symmetric(
+                                                              horizontal: 6,
+                                                              vertical: 2,
+                                                            ),
                                                         decoration: BoxDecoration(
-                                                          color: _getWdBg(wd.status),
-                                                          borderRadius: BorderRadius.circular(6),
+                                                          color: _getWdBg(
+                                                            wd.status,
+                                                          ),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                6,
+                                                              ),
                                                         ),
                                                         child: Text(
-                                                          _getWdLabel(wd.status),
+                                                          _getWdLabel(
+                                                            wd.status,
+                                                          ),
                                                           style: TextStyle(
-                                                            color: _getWdColor(wd.status),
-                                                            fontWeight: FontWeight.bold,
+                                                            color: _getWdColor(
+                                                              wd.status,
+                                                            ),
+                                                            fontWeight:
+                                                                FontWeight.bold,
                                                             fontSize: 8,
                                                           ),
                                                         ),
@@ -240,18 +295,25 @@ class _SellerWalletScreenState extends State<SellerWalletScreen> {
                                             ),
                                           ],
                                         ),
-                                        if (wd.adminNotes != null && wd.adminNotes!.isNotEmpty) ...[
+                                        if (wd.adminNotes != null &&
+                                            wd.adminNotes!.isNotEmpty) ...[
                                           const SizedBox(height: 10),
                                           Container(
                                             width: double.infinity,
                                             padding: const EdgeInsets.all(8),
                                             decoration: BoxDecoration(
-                                              color: Colors.grey.withOpacity(0.08),
-                                              borderRadius: BorderRadius.circular(8),
+                                              color: Colors.grey.withOpacity(
+                                                0.08,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
                                             ),
                                             child: Text(
                                               'Catatan Admin: ${wd.adminNotes}',
-                                              style: const TextStyle(fontSize: 11, fontStyle: FontStyle.italic),
+                                              style: const TextStyle(
+                                                fontSize: 11,
+                                                fontStyle: FontStyle.italic,
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -263,13 +325,20 @@ class _SellerWalletScreenState extends State<SellerWalletScreen> {
                                 final tx = item['raw'];
                                 final isCredit = tx.type == 'CREDIT';
                                 final sign = isCredit ? '+' : '-';
-                                final txColor = isCredit ? Colors.green : Colors.red;
-                                final txIcon = isCredit ? Icons.arrow_upward : Icons.arrow_downward;
+                                final txColor = isCredit
+                                    ? Colors.green
+                                    : Colors.red;
+                                final txIcon = isCredit
+                                    ? Icons.arrow_upward
+                                    : Icons.arrow_downward;
 
                                 return Card(
                                   margin: const EdgeInsets.only(bottom: 10),
                                   child: ListTile(
-                                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 6,
+                                    ),
                                     leading: Container(
                                       padding: const EdgeInsets.all(10),
                                       decoration: BoxDecoration(
@@ -284,13 +353,19 @@ class _SellerWalletScreenState extends State<SellerWalletScreen> {
                                     ),
                                     title: Text(
                                       tx.description,
-                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                      ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     subtitle: Text(
                                       tx.createdAt.split('T').first,
-                                      style: const TextStyle(fontSize: 11, color: Colors.grey),
+                                      style: const TextStyle(
+                                        fontSize: 11,
+                                        color: Colors.grey,
+                                      ),
                                     ),
                                     trailing: Text(
                                       '$sign${_currencyFormat.format(tx.amount)}',
@@ -314,7 +389,9 @@ class _SellerWalletScreenState extends State<SellerWalletScreen> {
 
   Color _getWdBg(String status) {
     if (status == 'PENDING') return Colors.orange.withOpacity(0.12);
-    if (status == 'APPROVED' || status == 'PAID') return Colors.green.withOpacity(0.12);
+    if (status == 'APPROVED' || status == 'PAID') {
+      return Colors.green.withOpacity(0.12);
+    }
     return Colors.red.withOpacity(0.12);
   }
 

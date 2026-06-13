@@ -29,7 +29,8 @@ class _CourierMapWidgetState extends State<CourierMapWidget> {
   Widget build(BuildContext context) {
     final saddr = '${widget.courierLat},${widget.courierLng}';
     final daddr = '${widget.sellerLat},${widget.sellerLng}';
-    final embedUrl = 'https://maps.google.com/maps?saddr=$saddr&daddr=$daddr&output=embed&z=14';
+    final embedUrl =
+        'https://maps.google.com/maps?saddr=$saddr&daddr=$daddr&output=embed&z=14';
     final viewId = 'google-map-$saddr-$daddr-${widget.isInteractive}';
 
     // ignore: undefined_prefixed_name

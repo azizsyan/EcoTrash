@@ -29,7 +29,7 @@ class AuthProvider extends ChangeNotifier {
 
       await SecureStorage.saveToken(token);
       await SecureStorage.saveRole(role);
-      
+
       notifyListeners();
       return role;
     } catch (e) {
@@ -65,7 +65,7 @@ class AuthProvider extends ChangeNotifier {
 
       await SecureStorage.saveToken(token);
       await SecureStorage.saveRole(role);
-      
+
       notifyListeners();
     } catch (e) {
       rethrow;
@@ -82,7 +82,8 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       // If unauthorized (invalid/expired token), clear session
-      if (e.toString().contains('Unauthorized') || e.toString().contains('401')) {
+      if (e.toString().contains('Unauthorized') ||
+          e.toString().contains('401')) {
         await logout();
       }
       rethrow;
@@ -117,7 +118,7 @@ class AuthProvider extends ChangeNotifier {
         city: city,
         province: province,
       );
-      
+
       _user = response['data'];
       notifyListeners();
     } catch (e) {

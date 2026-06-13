@@ -3,45 +3,27 @@ import 'package:flutter/material.dart';
 import '../models/seller_address_model.dart';
 import '../services/seller_address_service.dart';
 
-class SellerAddressProvider
-    extends ChangeNotifier {
-
-  final SellerAddressService
-      _service =
-      SellerAddressService();
+class SellerAddressProvider extends ChangeNotifier {
+  final SellerAddressService _service = SellerAddressService();
 
   bool _isLoading = false;
 
-  List<SellerAddressModel>
-      _addresses = [];
+  List<SellerAddressModel> _addresses = [];
 
-  bool get isLoading =>
-      _isLoading;
+  bool get isLoading => _isLoading;
 
-  List<SellerAddressModel>
-      get addresses =>
-          _addresses;
+  List<SellerAddressModel> get addresses => _addresses;
 
-  Future<void>
-      fetchAddresses() async {
+  Future<void> fetchAddresses() async {
     try {
       _isLoading = true;
       notifyListeners();
 
-      final response =
-          await _service
-              .getAddresses();
+      final response = await _service.getAddresses();
 
-      _addresses =
-          response
-              .map(
-                (item) =>
-                    SellerAddressModel
-                        .fromJson(
-                  item,
-                ),
-              )
-              .toList();
+      _addresses = response
+          .map((item) => SellerAddressModel.fromJson(item))
+          .toList();
 
       notifyListeners();
     } finally {
@@ -57,9 +39,7 @@ class SellerAddressProvider
     required double longitude,
     required bool isDefault,
   }) async {
-
-    await _service
-        .addAddress(
+    await _service.addAddress(
       label: label,
       address: address,
       latitude: latitude,
@@ -70,16 +50,10 @@ class SellerAddressProvider
     await fetchAddresses();
   }
 
-  Future<void> deleteAddress(
-    int id,
-  ) async {
+  Future<void> deleteAddress(int id) async {
+    await _service.deleteAddress(id);
 
-    await _service
-        .deleteAddress(id);
-
-    _addresses.removeWhere(
-      (e) => e.id == id,
-    );
+    _addresses.removeWhere((e) => e.id == id);
 
     notifyListeners();
   }

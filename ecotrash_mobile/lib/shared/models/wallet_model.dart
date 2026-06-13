@@ -3,11 +3,7 @@ class WalletModel {
   final int userId;
   final double balance;
 
-  WalletModel({
-    required this.id,
-    required this.userId,
-    required this.balance,
-  });
+  WalletModel({required this.id, required this.userId, required this.balance});
 
   factory WalletModel.fromJson(Map<String, dynamic> json) {
     return WalletModel(

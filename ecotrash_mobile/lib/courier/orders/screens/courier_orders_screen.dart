@@ -17,13 +17,17 @@ class _CourierOrdersScreenState extends State<CourierOrdersScreen> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      context.read<CourierOrderProvider>().fetchMyCourierJobs();
-      context.read<CourierOrderProvider>().fetchAvailableJobs();
+      if (mounted) {
+        context.read<CourierOrderProvider>().fetchMyCourierJobs();
+        context.read<CourierOrderProvider>().fetchAvailableJobs();
+      }
     });
   }
 
   Future<void> _refresh() async {
+    if (!mounted) return;
     await context.read<CourierOrderProvider>().fetchMyCourierJobs();
+    if (!mounted) return;
     await context.read<CourierOrderProvider>().fetchAvailableJobs();
   }
 
@@ -51,24 +55,47 @@ class _CourierOrdersScreenState extends State<CourierOrdersScreen> {
     }
   }
 
-  double _getJobDistance(Map<String, dynamic>? courierProfile, double jobLat, double jobLon) {
+  double _getJobDistance(
+    Map<String, dynamic>? courierProfile,
+    double jobLat,
+    double jobLon,
+  ) {
     if (courierProfile == null) return 2.5; // fallback mock
-    final cLat = double.tryParse(courierProfile['current_latitude']?.toString() ?? '0') ?? 0.0;
-    final cLon = double.tryParse(courierProfile['current_longitude']?.toString() ?? '0') ?? 0.0;
+    final cLat =
+        double.tryParse(
+          courierProfile['current_latitude']?.toString() ?? '0',
+        ) ??
+        0.0;
+    final cLon =
+        double.tryParse(
+          courierProfile['current_longitude']?.toString() ?? '0',
+        ) ??
+        0.0;
     if (cLat == 0.0 || cLon == 0.0) {
-      return double.tryParse(((jobLat - 6.2).abs() * 10 + 1.2).toStringAsFixed(1)) ?? 2.5;
+      return double.tryParse(
+            ((jobLat - 6.2).abs() * 10 + 1.2).toStringAsFixed(1),
+          ) ??
+          2.5;
     }
     final dist = _calculateDistance(cLat, cLon, jobLat, jobLon);
     return double.tryParse(dist.toStringAsFixed(1)) ?? 2.5;
   }
 
-  double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+  double _calculateDistance(
+    double lat1,
+    double lon1,
+    double lat2,
+    double lon2,
+  ) {
     const r = 6371; // Earth radius in km
     final dLat = _degToRad(lat2 - lat1);
     final dLon = _degToRad(lon2 - lon1);
-    final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
-        math.cos(_degToRad(lat1)) * math.cos(_degToRad(lat2)) *
-        math.sin(dLon / 2) * math.sin(dLon / 2);
+    final a =
+        math.sin(dLat / 2) * math.sin(dLat / 2) +
+        math.cos(_degToRad(lat1)) *
+            math.cos(_degToRad(lat2)) *
+            math.sin(dLon / 2) *
+            math.sin(dLon / 2);
     final c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
     return r * c;
   }
@@ -77,12 +104,18 @@ class _CourierOrdersScreenState extends State<CourierOrdersScreen> {
     return deg * (math.pi / 180);
   }
 
-  void _showAcceptConfirmationDialog(BuildContext context, dynamic job, double distance) {
+  void _showAcceptConfirmationDialog(
+    BuildContext context,
+    dynamic job,
+    double distance,
+  ) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
           title: Row(
             children: [
               Container(
@@ -91,13 +124,21 @@ class _CourierOrdersScreenState extends State<CourierOrdersScreen> {
                   color: Color(0xFFE8F5E9),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.assignment_outlined, color: Color(0xFF0F4D19), size: 24),
+                child: const Icon(
+                  Icons.assignment_outlined,
+                  color: Color(0xFF0F4D19),
+                  size: 24,
+                ),
               ),
               const SizedBox(width: 12),
               const Expanded(
                 child: Text(
                   'Terima Tugas?',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Color(0xFF1A1A1A)),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Color(0xFF1A1A1A),
+                  ),
                 ),
               ),
             ],
@@ -119,21 +160,48 @@ class _CourierOrdersScreenState extends State<CourierOrdersScreen> {
                 ),
                 child: Column(
                   children: [
-                    _buildDialogInfoRow(Icons.tag_rounded, 'ID Order', job.orderCode),
+                    _buildDialogInfoRow(
+                      Icons.tag_rounded,
+                      'ID Order',
+                      job.orderCode,
+                    ),
                     const Divider(height: 16),
-                    _buildDialogInfoRow(Icons.storefront_outlined, 'Penjual', job.seller?.name ?? 'Seller'),
+                    _buildDialogInfoRow(
+                      Icons.storefront_outlined,
+                      'Penjual',
+                      job.seller?.name ?? 'Seller',
+                    ),
                     const Divider(height: 16),
-                    _buildDialogInfoRow(Icons.location_on_outlined, 'Jarak', '$distance km'),
+                    _buildDialogInfoRow(
+                      Icons.location_on_outlined,
+                      'Jarak',
+                      '$distance km',
+                    ),
                     const Divider(height: 16),
-                    _buildDialogInfoRow(Icons.scale_outlined, 'Estimasi Berat', '${job.estimatedTotalWeight} kg'),
+                    _buildDialogInfoRow(
+                      Icons.scale_outlined,
+                      'Estimasi Berat',
+                      '${job.estimatedTotalWeight} kg',
+                    ),
                     const Divider(height: 16),
-                    _buildDialogInfoRow(Icons.monetization_on_outlined, 'Estimasi Pendapatan', 'Rp ${job.estimatedTotalPrice.toInt()}'),
+                    _buildDialogInfoRow(
+                      Icons.monetization_on_outlined,
+                      'Estimasi Pendapatan',
+                      'Rp ${job.estimatedTotalPrice.toInt()}',
+                    ),
                   ],
                 ),
               ),
               if (job.pickupNotes != null && job.pickupNotes!.isNotEmpty) ...[
                 const SizedBox(height: 12),
-                const Text('Catatan Penjual:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Colors.grey)),
+                const Text(
+                  'Catatan Penjual:',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 11,
+                    color: Colors.grey,
+                  ),
+                ),
                 const SizedBox(height: 4),
                 Container(
                   width: double.infinity,
@@ -145,7 +213,11 @@ class _CourierOrdersScreenState extends State<CourierOrdersScreen> {
                   ),
                   child: Text(
                     job.pickupNotes!,
-                    style: const TextStyle(fontSize: 11, fontStyle: FontStyle.italic, color: Colors.deepOrange),
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontStyle: FontStyle.italic,
+                      color: Colors.deepOrange,
+                    ),
                   ),
                 ),
               ],
@@ -154,20 +226,31 @@ class _CourierOrdersScreenState extends State<CourierOrdersScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Batal', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
+              child: const Text(
+                'Batal',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF0F4D19),
                 foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 elevation: 0,
               ),
               onPressed: () {
                 Navigator.pop(context);
                 _acceptOrder(job.id);
               },
-              child: const Text('Terima Tugas', style: TextStyle(fontWeight: FontWeight.bold)),
+              child: const Text(
+                'Terima Tugas',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         );
@@ -182,7 +265,14 @@ class _CourierOrdersScreenState extends State<CourierOrdersScreen> {
         const SizedBox(width: 8),
         Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
         const Spacer(),
-        Text(value, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF1A1A1A))),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF1A1A1A),
+          ),
+        ),
       ],
     );
   }
@@ -191,7 +281,7 @@ class _CourierOrdersScreenState extends State<CourierOrdersScreen> {
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
     final courierProvider = context.watch<CourierOrderProvider>();
-    
+
     final user = authProvider.user;
     final isOnline = user?['is_online'] == true || user?['is_online'] == 1;
     final courierProfile = user?['courier_profile'];
@@ -261,7 +351,10 @@ class _CourierOrdersScreenState extends State<CourierOrdersScreen> {
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: const Color(0xFF0F4D19),
                               borderRadius: BorderRadius.circular(10),
@@ -281,7 +374,11 @@ class _CourierOrdersScreenState extends State<CourierOrdersScreen> {
                       const SizedBox(height: 16),
                       Row(
                         children: [
-                          const Icon(Icons.storefront_outlined, size: 18, color: Colors.grey),
+                          const Icon(
+                            Icons.storefront_outlined,
+                            size: 18,
+                            color: Colors.grey,
+                          ),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
@@ -299,7 +396,11 @@ class _CourierOrdersScreenState extends State<CourierOrdersScreen> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Icon(Icons.location_on_outlined, size: 18, color: Colors.grey),
+                          const Icon(
+                            Icons.location_on_outlined,
+                            size: 18,
+                            color: Colors.grey,
+                          ),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
@@ -327,13 +428,17 @@ class _CourierOrdersScreenState extends State<CourierOrdersScreen> {
                         icon: const Icon(Icons.alt_route_rounded, size: 18),
                         label: const Text(
                           'Buka Alur Penjemputan',
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => CourierActiveJobScreen(orderId: activeJob.id),
+                              builder: (context) =>
+                                  CourierActiveJobScreen(orderId: activeJob.id),
                             ),
                           );
                         },
@@ -385,21 +490,35 @@ class _CourierOrdersScreenState extends State<CourierOrdersScreen> {
                     decoration: BoxDecoration(
                       color: Colors.orange.withOpacity(0.05),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.orange.withOpacity(0.15)),
+                      border: Border.all(
+                        color: Colors.orange.withOpacity(0.15),
+                      ),
                     ),
                     child: Column(
                       children: const [
-                        Icon(Icons.wifi_off_rounded, color: Colors.orange, size: 48),
-                        const SizedBox(height: 12),
-                        const Text(
-                          'Anda Sedang Offline',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Color(0xFF212121)),
+                        Icon(
+                          Icons.wifi_off_rounded,
+                          color: Colors.orange,
+                          size: 48,
                         ),
-                        const SizedBox(height: 6),
-                        const Text(
+                        SizedBox(height: 12),
+                        Text(
+                          'Anda Sedang Offline',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: Color(0xFF212121),
+                          ),
+                        ),
+                        SizedBox(height: 6),
+                        Text(
                           'Silakan aktifkan status kerja di beranda terlebih dahulu untuk melihat lowongan tugas penjemputan sampah!',
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 12, color: Colors.grey, height: 1.5),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                            height: 1.5,
+                          ),
                         ),
                       ],
                     ),
@@ -411,7 +530,11 @@ class _CourierOrdersScreenState extends State<CourierOrdersScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 40),
                     child: Column(
                       children: const [
-                        Icon(Icons.assignment_turned_in_outlined, size: 54, color: Colors.grey),
+                        Icon(
+                          Icons.assignment_turned_in_outlined,
+                          size: 54,
+                          color: Colors.grey,
+                        ),
                         SizedBox(height: 12),
                         Text(
                           'Belum ada tugas tersedia saat ini.\nSilakan tarik untuk memuat ulang.',
@@ -429,23 +552,34 @@ class _CourierOrdersScreenState extends State<CourierOrdersScreen> {
                   itemCount: courierProvider.availableJobs.length,
                   itemBuilder: (context, index) {
                     final job = courierProvider.availableJobs[index];
-                    final distance = _getJobDistance(courierProfile, job.latitude, job.longitude);
+                    final distance = _getJobDistance(
+                      courierProfile,
+                      job.latitude,
+                      job.longitude,
+                    );
                     final hasActive = activeJob != null;
 
                     return Container(
                       margin: const EdgeInsets.only(bottom: 12),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFEFF2EE), // Soft light grey-green background as shown in the mockup
+                        color: const Color(
+                          0xFFEFF2EE,
+                        ), // Soft light grey-green background as shown in the mockup
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: ListTile(
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
                         leading: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: const Color(0xFF0F4D19).withOpacity(0.1)),
+                            border: Border.all(
+                              color: const Color(0xFF0F4D19).withOpacity(0.1),
+                            ),
                           ),
                           child: const Icon(
                             Icons.inventory_2_outlined,
@@ -458,7 +592,9 @@ class _CourierOrdersScreenState extends State<CourierOrdersScreen> {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
-                            color: hasActive ? Colors.grey : const Color(0xFF1A1A1A),
+                            color: hasActive
+                                ? Colors.grey
+                                : const Color(0xFF1A1A1A),
                           ),
                         ),
                         subtitle: Text(
@@ -477,12 +613,18 @@ class _CourierOrdersScreenState extends State<CourierOrdersScreen> {
                           if (hasActive) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Anda masih memiliki tugas aktif berjalan. Selesaikan terlebih dahulu!'),
+                                content: Text(
+                                  'Anda masih memiliki tugas aktif berjalan. Selesaikan terlebih dahulu!',
+                                ),
                                 backgroundColor: Colors.orange,
                               ),
                             );
                           } else {
-                            _showAcceptConfirmationDialog(context, job, distance);
+                            _showAcceptConfirmationDialog(
+                              context,
+                              job,
+                              distance,
+                            );
                           }
                         },
                       ),

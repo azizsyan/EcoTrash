@@ -47,7 +47,7 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
       await authProvider.fetchProfile();
       _initializeFields();
       await _loadSavedAvatar();
-      
+
       // Fetch stats data
       context.read<SellerOrderProvider>().fetchOrders();
       context.read<SellerWalletProvider>().fetchWalletData();
@@ -93,11 +93,9 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
     });
   }
 
-
-
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
-    
+
     final ImageSource? source = await showModalBottomSheet<ImageSource>(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -133,9 +131,19 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
                         ),
                         child: Column(
                           children: const [
-                            Icon(Icons.camera_alt_rounded, color: Colors.green, size: 32),
+                            Icon(
+                              Icons.camera_alt_rounded,
+                              color: Colors.green,
+                              size: 32,
+                            ),
                             SizedBox(height: 8),
-                            Text('Kamera', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                            Text(
+                              'Kamera',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -154,9 +162,19 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
                         ),
                         child: Column(
                           children: const [
-                            Icon(Icons.photo_library_rounded, color: Colors.green, size: 32),
+                            Icon(
+                              Icons.photo_library_rounded,
+                              color: Colors.green,
+                              size: 32,
+                            ),
                             SizedBox(height: 8),
-                            Text('Galeri', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                            Text(
+                              'Galeri',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -207,7 +225,10 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profil berhasil diperbarui'), backgroundColor: Colors.green),
+        const SnackBar(
+          content: Text('Profil berhasil diperbarui'),
+          backgroundColor: Colors.green,
+        ),
       );
     } catch (e) {
       if (!mounted) return;
@@ -227,7 +248,9 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
       builder: (context) {
         final authProvider = context.watch<AuthProvider>();
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
           title: Row(
             children: const [
               Icon(Icons.lock, color: Colors.green),
@@ -244,24 +267,38 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
                   TextFormField(
                     controller: currentPassController,
                     obscureText: true,
-                    decoration: const InputDecoration(labelText: 'Password Saat Ini'),
-                    validator: (v) => v == null || v.isEmpty ? 'Password saat ini wajib diisi' : null,
+                    decoration: const InputDecoration(
+                      labelText: 'Password Saat Ini',
+                    ),
+                    validator: (v) => v == null || v.isEmpty
+                        ? 'Password saat ini wajib diisi'
+                        : null,
                   ),
                   const SizedBox(height: 12),
                   TextFormField(
                     controller: newPassController,
                     obscureText: true,
-                    decoration: const InputDecoration(labelText: 'Password Baru'),
-                    validator: (v) => v == null || v.length < 8 ? 'Password baru minimal 8 karakter' : null,
+                    decoration: const InputDecoration(
+                      labelText: 'Password Baru',
+                    ),
+                    validator: (v) => v == null || v.length < 8
+                        ? 'Password baru minimal 8 karakter'
+                        : null,
                   ),
                   const SizedBox(height: 12),
                   TextFormField(
                     controller: confirmPassController,
                     obscureText: true,
-                    decoration: const InputDecoration(labelText: 'Konfirmasi Password Baru'),
+                    decoration: const InputDecoration(
+                      labelText: 'Konfirmasi Password Baru',
+                    ),
                     validator: (v) {
-                      if (v == null || v.isEmpty) return 'Konfirmasi password wajib diisi';
-                      if (v != newPassController.text) return 'Konfirmasi password tidak cocok';
+                      if (v == null || v.isEmpty) {
+                        return 'Konfirmasi password wajib diisi';
+                      }
+                      if (v != newPassController.text) {
+                        return 'Konfirmasi password tidak cocok';
+                      }
                       return null;
                     },
                   ),
@@ -276,30 +313,50 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-              onPressed: authProvider.isLoading ? null : () async {
-                if (!_passFormKey.currentState!.validate()) return;
-                try {
-                  await authProvider.changePassword(
-                    currentPassword: currentPassController.text,
-                    newPassword: newPassController.text,
-                    newPasswordConfirmation: confirmPassController.text,
-                  );
-                  if (context.mounted) {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Password berhasil diubah'), backgroundColor: Colors.green),
-                    );
-                  }
-                } catch (e) {
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(e.toString().replaceAll('Exception:', '').trim()), backgroundColor: Colors.red),
-                    );
-                  }
-                }
-              },
+              onPressed: authProvider.isLoading
+                  ? null
+                  : () async {
+                      if (!_passFormKey.currentState!.validate()) return;
+                      try {
+                        await authProvider.changePassword(
+                          currentPassword: currentPassController.text,
+                          newPassword: newPassController.text,
+                          newPasswordConfirmation: confirmPassController.text,
+                        );
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Password berhasil diubah'),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                        }
+                      } catch (e) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                e
+                                    .toString()
+                                    .replaceAll('Exception:', '')
+                                    .trim(),
+                              ),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      }
+                    },
               child: authProvider.isLoading
-                  ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
                   : const Text('Simpan'),
             ),
           ],
@@ -315,10 +372,18 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
     final user = authProvider.user;
 
     // Calculate dynamic stats
-    final completedOrders = orderProvider.orders.where((o) => o.status == 'COMPLETED').toList();
+    final completedOrders = orderProvider.orders
+        .where((o) => o.status == 'COMPLETED')
+        .toList();
     final int setoranCount = completedOrders.length;
-    final double totalWeight = completedOrders.fold(0.0, (sum, o) => sum + (o.actualTotalWeight ?? o.estimatedTotalWeight));
-    final double totalEarnings = completedOrders.fold(0.0, (sum, o) => sum + o.totalPrice);
+    final double totalWeight = completedOrders.fold(
+      0.0,
+      (sum, o) => sum + (o.actualTotalWeight ?? o.estimatedTotalWeight),
+    );
+    final double totalEarnings = completedOrders.fold(
+      0.0,
+      (sum, o) => sum + o.totalPrice,
+    );
 
     // Eco badge logic
     String badgeName = 'Eco Beginner';
@@ -380,14 +445,19 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
                                     Container(
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        border: Border.all(color: Colors.green, width: 3),
+                                        border: Border.all(
+                                          color: Colors.green,
+                                          width: 3,
+                                        ),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Colors.black.withOpacity(0.1),
+                                            color: Colors.black.withOpacity(
+                                              0.1,
+                                            ),
                                             blurRadius: 8,
                                             offset: const Offset(0, 4),
-                                          )
-                                        ]
+                                          ),
+                                        ],
                                       ),
                                       child: CircleAvatar(
                                         radius: 48,
@@ -395,30 +465,52 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
                                         child: ClipOval(
                                           child: _pickedImageBytes != null
                                               ? Image.memory(
-                                                  Uint8List.fromList(_pickedImageBytes!),
+                                                  Uint8List.fromList(
+                                                    _pickedImageBytes!,
+                                                  ),
                                                   fit: BoxFit.cover,
                                                   width: 96,
                                                   height: 96,
                                                 )
                                               : (user['profile_photo'] != null
-                                                  ? Image.network(
-                                                      '${DioClient().baseUrl}/storage-proxy/${user['profile_photo']}',
-                                                      fit: BoxFit.cover,
-                                                      width: 96,
-                                                      height: 96,
-                                                      errorBuilder: (context, error, stackTrace) {
-                                                        return const Icon(Icons.person, size: 54, color: Colors.green);
-                                                      },
-                                                    )
-                                                  : Image.asset(
-                                                      _selectedAvatar,
-                                                      fit: BoxFit.cover,
-                                                      width: 96,
-                                                      height: 96,
-                                                      errorBuilder: (context, error, stackTrace) {
-                                                        return const Icon(Icons.person, size: 54, color: Colors.green);
-                                                      },
-                                                    )),
+                                                    ? Image.network(
+                                                        '${DioClient().baseUrl}/storage-proxy/${user['profile_photo']}',
+                                                        fit: BoxFit.cover,
+                                                        width: 96,
+                                                        height: 96,
+                                                        errorBuilder:
+                                                            (
+                                                              context,
+                                                              error,
+                                                              stackTrace,
+                                                            ) {
+                                                              return const Icon(
+                                                                Icons.person,
+                                                                size: 54,
+                                                                color: Colors
+                                                                    .green,
+                                                              );
+                                                            },
+                                                      )
+                                                    : Image.asset(
+                                                        _selectedAvatar,
+                                                        fit: BoxFit.cover,
+                                                        width: 96,
+                                                        height: 96,
+                                                        errorBuilder:
+                                                            (
+                                                              context,
+                                                              error,
+                                                              stackTrace,
+                                                            ) {
+                                                              return const Icon(
+                                                                Icons.person,
+                                                                size: 54,
+                                                                color: Colors
+                                                                    .green,
+                                                              );
+                                                            },
+                                                      )),
                                         ),
                                       ),
                                     ),
@@ -441,11 +533,18 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
                               const SizedBox(height: 16),
                               Text(
                                 user['name'] ?? 'Seller EcoTrash',
-                                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
                               ),
                               const SizedBox(height: 6),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 6,
+                                ),
                                 decoration: BoxDecoration(
                                   color: badgeColor,
                                   borderRadius: BorderRadius.circular(12),
@@ -459,7 +558,12 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
                                 ),
                                 child: Text(
                                   badgeName.toUpperCase(),
-                                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 10, letterSpacing: 1),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 10,
+                                    letterSpacing: 1,
+                                  ),
                                 ),
                               ),
                             ],
@@ -471,7 +575,11 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
                         // Stats Dashboard Section
                         const Text(
                           'Performa Penjualan Sampah',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black87),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: Colors.black87,
+                          ),
                         ),
                         const SizedBox(height: 12),
                         GridView.count(
@@ -491,7 +599,8 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
                             ),
                             _buildStatCard(
                               title: 'Total Berat',
-                              value: 'kg ${totalWeight.toStringAsFixed(1).replaceAll('.0', '')}',
+                              value:
+                                  'kg ${totalWeight.toStringAsFixed(1).replaceAll('.0', '')}',
                               unit: '',
                               icon: Icons.scale_outlined,
                               color: Colors.teal,
@@ -510,7 +619,9 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
 
                         // Alamat Saya Card (Requirement 2 - Moved Address to Profile)
                         Card(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
                           elevation: 2,
                           child: ListTile(
                             leading: Container(
@@ -519,15 +630,26 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
                                 color: Colors.blue.withOpacity(0.1),
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(Icons.location_on, color: Colors.blue),
+                              child: const Icon(
+                                Icons.location_on,
+                                color: Colors.blue,
+                              ),
                             ),
-                            title: const Text('Kelola Alamat Saya', style: TextStyle(fontWeight: FontWeight.bold)),
-                            subtitle: const Text('Tambah, ubah, hapus alamat penjemputan'),
+                            title: const Text(
+                              'Kelola Alamat Saya',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: const Text(
+                              'Tambah, ubah, hapus alamat penjemputan',
+                            ),
                             trailing: const Icon(Icons.chevron_right),
                             onTap: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => const SellerAddressesScreen()),
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const SellerAddressesScreen(),
+                                ),
                               );
                             },
                           ),
@@ -543,7 +665,10 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
                             children: [
                               const Text(
                                 'Biodata Diri',
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
                               ),
                               const SizedBox(height: 16),
 
@@ -555,7 +680,10 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
                                   labelText: 'Nama Lengkap',
                                   prefixIcon: Icon(Icons.person_outline),
                                 ),
-                                validator: (value) => value == null || value.isEmpty ? 'Nama tidak boleh kosong' : null,
+                                validator: (value) =>
+                                    value == null || value.isEmpty
+                                    ? 'Nama tidak boleh kosong'
+                                    : null,
                               ),
                               const SizedBox(height: 16),
 
@@ -580,7 +708,10 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
                                   labelText: 'Nomor Telepon',
                                   prefixIcon: Icon(Icons.phone_outlined),
                                 ),
-                                validator: (value) => value == null || value.isEmpty ? 'Nomor telepon tidak boleh kosong' : null,
+                                validator: (value) =>
+                                    value == null || value.isEmpty
+                                    ? 'Nomor telepon tidak boleh kosong'
+                                    : null,
                               ),
                             ],
                           ),
@@ -629,7 +760,9 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
 
                         // Logout Button
                         ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                          ),
                           icon: const Icon(Icons.logout),
                           label: const Text('Keluar dari Akun'),
                           onPressed: () async {
@@ -682,7 +815,11 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
           const SizedBox(height: 8),
           Text(
             value,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: Colors.black87,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -690,13 +827,14 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              fontSize: 10,
+              color: Colors.grey,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           if (unit.isNotEmpty)
-            Text(
-              unit,
-              style: const TextStyle(fontSize: 8, color: Colors.grey),
-            ),
+            Text(unit, style: const TextStyle(fontSize: 8, color: Colors.grey)),
         ],
       ),
     );

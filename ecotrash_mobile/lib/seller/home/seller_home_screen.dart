@@ -45,7 +45,7 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
     final authProvider = context.watch<AuthProvider>();
     final walletProvider = context.watch<SellerWalletProvider>();
     final orderProvider = context.watch<SellerOrderProvider>();
-    
+
     final user = authProvider.user;
     final activeOrders = orderProvider.activeOrders;
 
@@ -60,7 +60,12 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
               // Header Card
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.only(top: 60, bottom: 28, left: 24, right: 24),
+                padding: const EdgeInsets.only(
+                  top: 60,
+                  bottom: 28,
+                  left: 24,
+                  right: 24,
+                ),
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     colors: [Color(0xFF1B5E20), Color(0xFF2E7D32)],
@@ -83,11 +88,20 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
                           children: [
                             Text(
                               'Selamat datang,',
-                              style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 14),
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.8),
+                                fontSize: 14,
+                              ),
                             ),
                             Text(
-                              user != null ? '${user['name']} 👋' : 'Seller EcoTrash 👋',
-                              style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+                              user != null
+                                  ? '${user['name']} 👋'
+                                  : 'Seller EcoTrash 👋',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),
@@ -117,34 +131,57 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
                             children: [
                               Row(
                                 children: const [
-                                  Icon(Icons.account_balance_wallet, color: Colors.green, size: 16),
+                                  Icon(
+                                    Icons.account_balance_wallet,
+                                    color: Colors.green,
+                                    size: 16,
+                                  ),
                                   SizedBox(width: 6),
                                   Text(
                                     'Saldo Dompet Saya',
-                                    style: TextStyle(color: Colors.grey, fontSize: 13, fontWeight: FontWeight.w600),
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                                 ],
                               ),
                               const SizedBox(height: 6),
                               Text(
                                 _currencyFormat.format(walletProvider.balance),
-                                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.green),
+                                style: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green,
+                                ),
                               ),
                             ],
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 10,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.green.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child: Row(
                               children: [
-                                const Icon(Icons.eco, color: Colors.green, size: 18),
+                                const Icon(
+                                  Icons.eco,
+                                  color: Colors.green,
+                                  size: 18,
+                                ),
                                 const SizedBox(width: 4),
                                 Text(
                                   '${orderProvider.orders.where((o) => o.status == "COMPLETED").length} Setoran',
-                                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: 13),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green,
+                                    fontSize: 13,
+                                  ),
                                 ),
                               ],
                             ),
@@ -187,12 +224,19 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
                           children: [
                             const Text(
                               'Ubah Sampah Jadi Uang!',
-                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 17),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 17,
+                              ),
                             ),
                             const SizedBox(height: 6),
                             Text(
                               'Jual sampah anorganikmu dan jadwalkan penjemputan sekarang.',
-                              style: TextStyle(color: Colors.white.withOpacity(0.85), fontSize: 11),
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.85),
+                                fontSize: 11,
+                              ),
                             ),
                             const SizedBox(height: 14),
                             ElevatedButton.icon(
@@ -200,15 +244,32 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
                                 backgroundColor: Colors.white,
                                 foregroundColor: Colors.green,
                                 elevation: 0,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 10,
+                                ),
                               ),
-                              icon: const Icon(Icons.add_shopping_cart, size: 18),
-                              label: const Text('Mulai Jual Sampah', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                              icon: const Icon(
+                                Icons.add_shopping_cart,
+                                size: 18,
+                              ),
+                              label: const Text(
+                                'Mulai Jual Sampah',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                ),
+                              ),
                               onPressed: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => const CreateOrderScreen()),
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const CreateOrderScreen(),
+                                  ),
                                 );
                               },
                             ),
@@ -222,7 +283,11 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
                           color: Colors.white.withOpacity(0.15),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.recycling, color: Colors.white, size: 48),
+                        child: const Icon(
+                          Icons.recycling,
+                          color: Colors.white,
+                          size: 48,
+                        ),
                       ),
                     ],
                   ),
@@ -239,11 +304,19 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
                   children: [
                     const Text(
                       'Daftar Harga Sampah',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 12),
                     orderProvider.categories.isEmpty
-                        ? const Center(child: Padding(padding: EdgeInsets.all(24), child: CircularProgressIndicator()))
+                        ? const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(24),
+                              child: CircularProgressIndicator(),
+                            ),
+                          )
                         : ListView.builder(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
@@ -252,7 +325,9 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
                               final cat = orderProvider.categories[index];
                               return Card(
                                 margin: const EdgeInsets.only(bottom: 10),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
                                 elevation: 1,
                                 child: Padding(
                                   padding: const EdgeInsets.all(16),
@@ -264,21 +339,32 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
                                           color: Colors.green.withOpacity(0.1),
                                           shape: BoxShape.circle,
                                         ),
-                                        child: const Icon(Icons.delete_outline, color: Colors.green),
+                                        child: const Icon(
+                                          Icons.delete_outline,
+                                          color: Colors.green,
+                                        ),
                                       ),
                                       const SizedBox(width: 16),
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               cat.name,
-                                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                              ),
                                             ),
                                             const SizedBox(height: 2),
                                             Text(
-                                              cat.description ?? 'Kategori sampah',
-                                              style: const TextStyle(fontSize: 11, color: Colors.grey),
+                                              cat.description ??
+                                                  'Kategori sampah',
+                                              style: const TextStyle(
+                                                fontSize: 11,
+                                                color: Colors.grey,
+                                              ),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                             ),
@@ -287,7 +373,11 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
                                       ),
                                       Text(
                                         '${_currencyFormat.format(cat.pricePerKg)} / ${cat.unit}',
-                                        style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 14),
+                                        style: const TextStyle(
+                                          color: Colors.green,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -309,7 +399,10 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
                   children: [
                     const Text(
                       'Penjemputan Aktif',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 12),
                     activeOrders.isEmpty
@@ -319,21 +412,33 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
                             decoration: BoxDecoration(
                               color: Colors.grey.withOpacity(0.06),
                               borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: Colors.grey.withOpacity(0.12)),
+                              border: Border.all(
+                                color: Colors.grey.withOpacity(0.12),
+                              ),
                             ),
                             child: Column(
                               children: [
-                                Icon(Icons.recycling_rounded, color: Colors.green.withOpacity(0.4), size: 48),
+                                Icon(
+                                  Icons.recycling_rounded,
+                                  color: Colors.green.withOpacity(0.4),
+                                  size: 48,
+                                ),
                                 const SizedBox(height: 12),
                                 const Text(
                                   'Sampahmu bisa jadi uang!',
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
                                 ),
                                 const SizedBox(height: 4),
                                 const Text(
                                   'Yuk jual sampah pertamamu hari ini bersama kurir handal kami.',
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                               ],
                             ),
@@ -352,7 +457,10 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => SellerOrderDetailScreen(orderId: order.id),
+                                        builder: (context) =>
+                                            SellerOrderDetailScreen(
+                                              orderId: order.id,
+                                            ),
                                       ),
                                     );
                                   },
@@ -363,38 +471,57 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
                                         Container(
                                           padding: const EdgeInsets.all(12),
                                           decoration: BoxDecoration(
-                                            color: Colors.green.withOpacity(0.1),
+                                            color: Colors.green.withOpacity(
+                                              0.1,
+                                            ),
                                             shape: BoxShape.circle,
                                           ),
-                                          child: const Icon(Icons.local_shipping, color: Colors.green),
+                                          child: const Icon(
+                                            Icons.local_shipping,
+                                            color: Colors.green,
+                                          ),
                                         ),
                                         const SizedBox(width: 14),
                                         Expanded(
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 order.orderCode,
-                                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 14,
+                                                ),
                                               ),
                                               const SizedBox(height: 2),
                                               Text(
                                                 'Estimasi berat: ${order.estimatedTotalWeight} kg',
-                                                style: const TextStyle(fontSize: 12, color: Colors.grey),
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.grey,
+                                                ),
                                               ),
                                             ],
                                           ),
                                         ),
                                         Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                            vertical: 6,
+                                          ),
                                           decoration: BoxDecoration(
                                             color: _getStatusBg(order.status),
-                                            borderRadius: BorderRadius.circular(12),
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
                                           ),
                                           child: Text(
                                             _getStatusLabel(order.status),
                                             style: TextStyle(
-                                              color: _getStatusColor(order.status),
+                                              color: _getStatusColor(
+                                                order.status,
+                                              ),
                                               fontWeight: FontWeight.bold,
                                               fontSize: 11,
                                             ),

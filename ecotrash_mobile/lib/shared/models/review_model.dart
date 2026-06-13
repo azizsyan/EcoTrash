@@ -30,7 +30,9 @@ class ReviewModel {
       rating: json['rating'] ?? 5,
       comment: json['comment'],
       createdAt: json['created_at'] ?? '',
-      seller: json['seller'] != null ? UserModel.fromJson(json['seller']) : null,
+      seller: json['seller'] != null
+          ? UserModel.fromJson(json['seller'])
+          : null,
     );
   }
 }

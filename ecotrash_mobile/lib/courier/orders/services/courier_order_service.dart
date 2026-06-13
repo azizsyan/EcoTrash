@@ -20,10 +20,7 @@ class CourierOrderService {
     try {
       await _dio.patch(
         '/courier/location',
-        data: {
-          'current_latitude': latitude,
-          'current_longitude': longitude,
-        },
+        data: {'current_latitude': latitude, 'current_longitude': longitude},
       );
     } on DioException catch (e) {
       throw Exception(e.message ?? 'Gagal memperbarui koordinat lokasi');
@@ -85,11 +82,7 @@ class CourierOrderService {
       await _dio.post(
         '/orders/$orderId/pickup',
         data: formData,
-        options: Options(
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        ),
+        options: Options(headers: {'Content-Type': 'multipart/form-data'}),
       );
     } on DioException catch (e) {
       throw Exception(e.message ?? 'Gagal memproses pengambilan');
@@ -109,12 +102,7 @@ class CourierOrderService {
     required List<Map<String, dynamic>> items,
   }) async {
     try {
-      await _dio.patch(
-        '/orders/$orderId/complete',
-        data: {
-          'items': items,
-        },
-      );
+      await _dio.patch('/orders/$orderId/complete', data: {'items': items});
     } on DioException catch (e) {
       throw Exception(e.message ?? 'Gagal menyelesaikan pesanan');
     }

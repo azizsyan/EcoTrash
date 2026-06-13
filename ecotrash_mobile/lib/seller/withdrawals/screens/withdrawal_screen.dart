@@ -31,14 +31,22 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
 
     if (amount > walletProvider.balance) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Saldo Anda tidak mencukupi untuk melakukan penarikan ini'), backgroundColor: Colors.red),
+        const SnackBar(
+          content: Text(
+            'Saldo Anda tidak mencukupi untuk melakukan penarikan ini',
+          ),
+          backgroundColor: Colors.red,
+        ),
       );
       return;
     }
 
     if (amount < 10000) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Minimal penarikan adalah Rp 10.000'), backgroundColor: Colors.orange),
+        const SnackBar(
+          content: Text('Minimal penarikan adalah Rp 10.000'),
+          backgroundColor: Colors.orange,
+        ),
       );
       return;
     }
@@ -54,7 +62,9 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Pengajuan penarikan dana berhasil dikirim! Menunggu konfirmasi admin.'),
+          content: Text(
+            'Pengajuan penarikan dana berhasil dikirim! Menunggu konfirmasi admin.',
+          ),
           backgroundColor: Colors.green,
         ),
       );
@@ -80,9 +90,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
     final walletProvider = context.watch<SellerWalletProvider>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Penarikan Saldo'),
-      ),
+      appBar: AppBar(title: const Text('Penarikan Saldo')),
       body: walletProvider.isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -98,15 +106,24 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                       decoration: BoxDecoration(
                         color: Colors.green.withOpacity(0.06),
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.green.withOpacity(0.15)),
+                        border: Border.all(
+                          color: Colors.green.withOpacity(0.15),
+                        ),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Total Saldo Tersedia:', style: TextStyle(fontWeight: FontWeight.bold)),
+                          const Text(
+                            'Total Saldo Tersedia:',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                           Text(
                             _currencyFormat.format(walletProvider.balance),
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.green),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Colors.green,
+                            ),
                           ),
                         ],
                       ),
@@ -197,7 +214,10 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                     // Riwayat Pengajuan Withdrawal
                     const Text(
                       'Riwayat Pengajuan Penarikan',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
                     const SizedBox(height: 12),
 
@@ -205,7 +225,13 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                         ? const Center(
                             child: Padding(
                               padding: EdgeInsets.symmetric(vertical: 24),
-                              child: Text('Belum ada riwayat penarikan.', style: TextStyle(color: Colors.grey, fontSize: 13)),
+                              child: Text(
+                                'Belum ada riwayat penarikan.',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 13,
+                                ),
+                              ),
                             ),
                           )
                         : ListView.builder(
@@ -219,20 +245,29 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(16),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
                                             '${wd.bankName} - ${wd.accountNumber}',
-                                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14,
+                                            ),
                                           ),
                                           Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                              vertical: 4,
+                                            ),
                                             decoration: BoxDecoration(
                                               color: _getWdBg(wd.status),
-                                              borderRadius: BorderRadius.circular(10),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                             ),
                                             child: Text(
                                               _getWdLabel(wd.status),
@@ -248,34 +283,53 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                                       const SizedBox(height: 4),
                                       Text(
                                         'Atas Nama: ${wd.accountName}',
-                                        style: const TextStyle(fontSize: 12, color: Colors.grey),
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                        ),
                                       ),
                                       const SizedBox(height: 8),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
                                             wd.createdAt.split('T').first,
-                                            style: const TextStyle(fontSize: 11, color: Colors.grey),
+                                            style: const TextStyle(
+                                              fontSize: 11,
+                                              color: Colors.grey,
+                                            ),
                                           ),
                                           Text(
                                             _currencyFormat.format(wd.amount),
-                                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black87),
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14,
+                                              color: Colors.black87,
+                                            ),
                                           ),
                                         ],
                                       ),
-                                      if (wd.adminNotes != null && wd.adminNotes!.isNotEmpty) ...[
+                                      if (wd.adminNotes != null &&
+                                          wd.adminNotes!.isNotEmpty) ...[
                                         const SizedBox(height: 10),
                                         Container(
                                           width: double.infinity,
                                           padding: const EdgeInsets.all(10),
                                           decoration: BoxDecoration(
-                                            color: Colors.grey.withOpacity(0.08),
-                                            borderRadius: BorderRadius.circular(8),
+                                            color: Colors.grey.withOpacity(
+                                              0.08,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
                                           ),
                                           child: Text(
                                             'Catatan Admin: ${wd.adminNotes}',
-                                            style: const TextStyle(fontSize: 11, fontStyle: FontStyle.italic),
+                                            style: const TextStyle(
+                                              fontSize: 11,
+                                              fontStyle: FontStyle.italic,
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -294,7 +348,9 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
 
   Color _getWdBg(String status) {
     if (status == 'PENDING') return Colors.orange.withOpacity(0.12);
-    if (status == 'APPROVED' || status == 'PAID') return Colors.green.withOpacity(0.12);
+    if (status == 'APPROVED' || status == 'PAID') {
+      return Colors.green.withOpacity(0.12);
+    }
     return Colors.red.withOpacity(0.12);
   }
 

@@ -14,7 +14,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  
+
   String selectedRole = 'seller'; // 'seller' or 'courier'
   bool _obscurePassword = true;
 
@@ -54,10 +54,12 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         throw Exception('Akses tidak didukung untuk peran ini');
       }
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Selamat datang kembali, ${authProvider.user?['name'] ?? "User"}!'),
+          content: Text(
+            'Selamat datang kembali, ${authProvider.user?['name'] ?? "User"}!',
+          ),
           backgroundColor: const Color(0xFF0F4D19),
         ),
       );
@@ -100,11 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [
-                        Icon(
-                          Icons.recycling,
-                          size: 60,
-                          color: Colors.white,
-                        ),
+                        Icon(Icons.recycling, size: 60, color: Colors.white),
                         SizedBox(height: 8),
                         Text(
                           'EcoTrash',
@@ -124,7 +122,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             fontStyle: FontStyle.italic,
                           ),
                         ),
-                        SizedBox(height: 20), // Extra spacing for semicircle effect
+                        SizedBox(
+                          height: 20,
+                        ), // Extra spacing for semicircle effect
                       ],
                     ),
                   ),
@@ -145,7 +145,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   borderRadius: BorderRadius.circular(32),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 32,
+                  ),
                   child: Form(
                     key: _formKey,
                     child: Column(
@@ -167,7 +170,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         Container(
                           padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFEAF2F7), // Soft blue-grey pill
+                            color: const Color(
+                              0xFFEAF2F7,
+                            ), // Soft blue-grey pill
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Row(
@@ -178,11 +183,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onTap: () {
                                     setState(() {
                                       selectedRole = 'seller';
-                                      emailController.text = 'seller1@ecotrash.com';
+                                      emailController.text =
+                                          'seller1@ecotrash.com';
                                     });
                                   },
                                   child: Container(
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 12,
+                                    ),
                                     decoration: BoxDecoration(
                                       color: selectedRole == 'seller'
                                           ? const Color(0xFF0F4D19)
@@ -190,7 +198,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Icon(
                                           Icons.storefront,
@@ -221,11 +230,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onTap: () {
                                     setState(() {
                                       selectedRole = 'courier';
-                                      emailController.text = 'courier1@ecotrash.com';
+                                      emailController.text =
+                                          'courier1@ecotrash.com';
                                     });
                                   },
                                   child: Container(
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 12,
+                                    ),
                                     decoration: BoxDecoration(
                                       color: selectedRole == 'courier'
                                           ? const Color(0xFF0F4D19)
@@ -233,7 +245,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Icon(
                                           Icons.local_shipping_outlined,
@@ -279,11 +292,20 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: const TextStyle(fontSize: 14),
                           decoration: InputDecoration(
                             filled: true,
-                            fillColor: const Color(0xFFEAF2F7), // Soft background
-                            prefixIcon: const Icon(Icons.email_outlined, color: Colors.grey, size: 20),
+                            fillColor: const Color(
+                              0xFFEAF2F7,
+                            ), // Soft background
+                            prefixIcon: const Icon(
+                              Icons.email_outlined,
+                              color: Colors.grey,
+                              size: 20,
+                            ),
                             hintText: 'nama@email.com',
                             hintStyle: const TextStyle(color: Colors.grey),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 16,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
                               borderSide: BorderSide.none,
@@ -314,11 +336,19 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: const TextStyle(fontSize: 14),
                           decoration: InputDecoration(
                             filled: true,
-                            fillColor: const Color(0xFFEAF2F7), // Soft background
-                            prefixIcon: const Icon(Icons.lock_outlined, color: Colors.grey, size: 20),
+                            fillColor: const Color(
+                              0xFFEAF2F7,
+                            ), // Soft background
+                            prefixIcon: const Icon(
+                              Icons.lock_outlined,
+                              color: Colors.grey,
+                              size: 20,
+                            ),
                             suffixIcon: IconButton(
                               icon: Icon(
-                                _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                                _obscurePassword
+                                    ? Icons.visibility_off_outlined
+                                    : Icons.visibility_outlined,
                                 color: Colors.grey,
                                 size: 20,
                               ),
@@ -330,7 +360,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             hintText: '••••••••',
                             hintStyle: const TextStyle(color: Colors.grey),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 16,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
                               borderSide: BorderSide.none,
@@ -360,7 +393,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               ? const SizedBox(
                                   height: 20,
                                   width: 20,
-                                  child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
                                 )
                               : const Text(
                                   'Masuk',
@@ -378,13 +414,19 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             const Text(
                               'Belum memiliki akun? ',
-                              style: TextStyle(color: Colors.grey, fontSize: 13),
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 13,
+                              ),
                             ),
                             GestureDetector(
                               onTap: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const RegisterScreen(),
+                                  ),
                                 );
                               },
                               child: const Text(
@@ -452,7 +494,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),

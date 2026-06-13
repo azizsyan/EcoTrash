@@ -32,18 +32,22 @@ class _CourierProfileScreenState extends State<CourierProfileScreen> {
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
     final courierProvider = context.watch<CourierOrderProvider>();
-    
+
     final user = authProvider.user;
     final courierProfile = user?['courier_profile'];
     final completedJobs = courierProvider.completedJobs;
 
-    final rating = double.tryParse(courierProfile?['rating']?.toString() ?? '0') ?? 0.0;
-    final isVerified = courierProfile?['is_verified'] == 1 || courierProfile?['is_verified'] == true;
+    final rating =
+        double.tryParse(courierProfile?['rating']?.toString() ?? '0') ?? 0.0;
+    final isVerified =
+        courierProfile?['is_verified'] == 1 ||
+        courierProfile?['is_verified'] == true;
     final isOnline = user?['is_online'] == true || user?['is_online'] == 1;
 
     // Calculate total waste collected dynamically
     final totalWaste = completedJobs.fold<double>(0.0, (sum, job) {
-      return sum + (double.tryParse(job.actualTotalWeight?.toString() ?? '0') ?? 0.0);
+      return sum +
+          (double.tryParse(job.actualTotalWeight?.toString() ?? '0') ?? 0.0);
     });
 
     // Face photo URL builder
@@ -67,13 +71,19 @@ class _CourierProfileScreenState extends State<CourierProfileScreen> {
               color: const Color(0xFF1B5E20),
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 20,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     // Premium Avatar Card
                     Container(
-                      padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 28,
+                        horizontal: 20,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(28),
@@ -95,7 +105,10 @@ class _CourierProfileScreenState extends State<CourierProfileScreen> {
                                 decoration: const BoxDecoration(
                                   shape: BoxShape.circle,
                                   gradient: LinearGradient(
-                                    colors: [Color(0xFF1B5E20), Color(0xFF4CAF50)],
+                                    colors: [
+                                      Color(0xFF1B5E20),
+                                      Color(0xFF4CAF50),
+                                    ],
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
                                   ),
@@ -107,18 +120,30 @@ class _CourierProfileScreenState extends State<CourierProfileScreen> {
                                       ? NetworkImage(facePhotoUrl)
                                       : null,
                                   child: facePhotoUrl == null
-                                      ? const Icon(Icons.delivery_dining, size: 54, color: Color(0xFF1B5E20))
+                                      ? const Icon(
+                                          Icons.delivery_dining,
+                                          size: 54,
+                                          color: Color(0xFF1B5E20),
+                                        )
                                       : null,
                                 ),
                               ),
                               Positioned(
                                 bottom: -2,
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 3,
+                                  ),
                                   decoration: BoxDecoration(
-                                    color: isOnline ? const Color(0xFF2E7D32) : Colors.grey,
+                                    color: isOnline
+                                        ? const Color(0xFF2E7D32)
+                                        : Colors.grey,
                                     borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(color: Colors.white, width: 2),
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 2,
+                                    ),
                                   ),
                                   child: Text(
                                     isOnline ? 'ONLINE' : 'OFFLINE',
@@ -139,30 +164,49 @@ class _CourierProfileScreenState extends State<CourierProfileScreen> {
                             children: [
                               Text(
                                 user?['name'] ?? 'Kurir EcoTrash',
-                                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
                               ),
                               if (isVerified) ...[
                                 const SizedBox(width: 6),
-                                const Icon(Icons.verified, color: Colors.blue, size: 20),
+                                const Icon(
+                                  Icons.verified,
+                                  color: Colors.blue,
+                                  size: 20,
+                                ),
                               ],
                             ],
                           ),
                           const SizedBox(height: 6),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
-                              color: isVerified ? Colors.blue.withOpacity(0.08) : Colors.amber.withOpacity(0.08),
+                              color: isVerified
+                                  ? Colors.blue.withOpacity(0.08)
+                                  : Colors.amber.withOpacity(0.08),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: isVerified ? Colors.blue.withOpacity(0.2) : Colors.amber.withOpacity(0.3),
+                                color: isVerified
+                                    ? Colors.blue.withOpacity(0.2)
+                                    : Colors.amber.withOpacity(0.3),
                               ),
                             ),
                             child: Text(
-                              isVerified ? 'Kurir Terverifikasi Resmi' : 'Menunggu Verifikasi Akun',
+                              isVerified
+                                  ? 'Kurir Terverifikasi Resmi'
+                                  : 'Menunggu Verifikasi Akun',
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.bold,
-                                color: isVerified ? Colors.blue.shade700 : Colors.amber.shade800,
+                                color: isVerified
+                                    ? Colors.blue.shade700
+                                    : Colors.amber.shade800,
                               ),
                             ),
                           ),
@@ -174,7 +218,10 @@ class _CourierProfileScreenState extends State<CourierProfileScreen> {
 
                     // Green Statistics Card (Total Sampah Dikumpulkan & Total Deliveries)
                     Container(
-                      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 20,
+                        horizontal: 16,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFF18572A),
                         borderRadius: BorderRadius.circular(28),
@@ -185,7 +232,11 @@ class _CourierProfileScreenState extends State<CourierProfileScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                const Icon(Icons.scale_rounded, color: Colors.white, size: 24),
+                                const Icon(
+                                  Icons.scale_rounded,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
                                 const SizedBox(height: 8),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,7 +264,11 @@ class _CourierProfileScreenState extends State<CourierProfileScreen> {
                                 const SizedBox(height: 6),
                                 Text(
                                   '${totalWaste.toStringAsFixed(1)} kg',
-                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ],
                             ),
@@ -227,7 +282,11 @@ class _CourierProfileScreenState extends State<CourierProfileScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                const Icon(Icons.local_shipping_rounded, color: Colors.white, size: 24),
+                                const Icon(
+                                  Icons.local_shipping_rounded,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
                                 const SizedBox(height: 8),
                                 const Text(
                                   'TOTAL PENGIRIMAN',
@@ -243,7 +302,11 @@ class _CourierProfileScreenState extends State<CourierProfileScreen> {
                                 const SizedBox(height: 18),
                                 Text(
                                   '${completedJobs.length} Kali',
-                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ],
                             ),
@@ -257,7 +320,11 @@ class _CourierProfileScreenState extends State<CourierProfileScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                const Icon(Icons.star_rounded, color: Colors.amber, size: 24),
+                                const Icon(
+                                  Icons.star_rounded,
+                                  color: Colors.amber,
+                                  size: 24,
+                                ),
                                 const SizedBox(height: 8),
                                 const Text(
                                   'RATING',
@@ -273,7 +340,11 @@ class _CourierProfileScreenState extends State<CourierProfileScreen> {
                                 const SizedBox(height: 18),
                                 Text(
                                   rating.toStringAsFixed(1),
-                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ],
                             ),
@@ -289,7 +360,9 @@ class _CourierProfileScreenState extends State<CourierProfileScreen> {
                     const SizedBox(height: 12),
                     Card(
                       margin: EdgeInsets.zero,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                       elevation: 0,
                       color: Colors.white,
                       child: Padding(
@@ -326,11 +399,16 @@ class _CourierProfileScreenState extends State<CourierProfileScreen> {
                     const SizedBox(height: 24),
 
                     // Section 2: Informasi Kendaraan & KTP/SIM
-                    _buildSectionHeader('Informasi Kendaraan & Identitas', Icons.motorcycle_outlined),
+                    _buildSectionHeader(
+                      'Informasi Kendaraan & Identitas',
+                      Icons.motorcycle_outlined,
+                    ),
                     const SizedBox(height: 12),
                     Card(
                       margin: EdgeInsets.zero,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                       elevation: 0,
                       color: Colors.white,
                       child: Padding(
@@ -341,10 +419,18 @@ class _CourierProfileScreenState extends State<CourierProfileScreen> {
                               label: 'Tipe Kendaraan',
                               value: courierProfile?['vehicle_type'] == null
                                   ? '-'
-                                  : (courierProfile?['vehicle_type']?.toString().toLowerCase().contains('mobil') == true ||
-                                          courierProfile?['vehicle_type']?.toString().toLowerCase().contains('cargo') == true)
-                                      ? 'EcoCargo'
-                                      : 'EcoRide',
+                                  : (courierProfile?['vehicle_type']
+                                                ?.toString()
+                                                .toLowerCase()
+                                                .contains('mobil') ==
+                                            true ||
+                                        courierProfile?['vehicle_type']
+                                                ?.toString()
+                                                .toLowerCase()
+                                                .contains('cargo') ==
+                                            true)
+                                  ? 'EcoCargo'
+                                  : 'EcoRide',
                               icon: Icons.commute_outlined,
                               iconColor: Colors.purple,
                             ),
@@ -368,23 +454,46 @@ class _CourierProfileScreenState extends State<CourierProfileScreen> {
                               value: '',
                               icon: Icons.assignment_ind_outlined,
                               iconColor: Colors.teal,
-                              valueWidget: ((courierProfile?['sim_number']?.toString() ?? '').isNotEmpty)
+                              valueWidget:
+                                  ((courierProfile?['sim_number']?.toString() ??
+                                          '')
+                                      .isNotEmpty)
                                   ? Row(
                                       children: [
                                         Text(
-                                          ((courierProfile?['vehicle_type']?.toString().toLowerCase() ?? '').contains('mobil') ||
-                                                  (courierProfile?['vehicle_type']?.toString().toLowerCase() ?? '').contains('cargo'))
+                                          ((courierProfile?['vehicle_type']
+                                                              ?.toString()
+                                                              .toLowerCase() ??
+                                                          '')
+                                                      .contains('mobil') ||
+                                                  (courierProfile?['vehicle_type']
+                                                              ?.toString()
+                                                              .toLowerCase() ??
+                                                          '')
+                                                      .contains('cargo'))
                                               ? 'SIM A (Terverifikasi)'
                                               : 'SIM C (Terverifikasi)',
-                                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black87),
+                                          style: const TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black87,
+                                          ),
                                         ),
                                         const SizedBox(width: 6),
-                                        const Icon(Icons.check_circle, color: Colors.green, size: 16),
+                                        const Icon(
+                                          Icons.check_circle,
+                                          color: Colors.green,
+                                          size: 16,
+                                        ),
                                       ],
                                     )
                                   : const Text(
                                       'Belum Terverifikasi',
-                                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.red),
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.red,
+                                      ),
                                     ),
                             ),
                           ],
@@ -402,11 +511,19 @@ class _CourierProfileScreenState extends State<CourierProfileScreen> {
                         backgroundColor: const Color(0xFFC62828),
                         foregroundColor: Colors.white,
                         minimumSize: const Size(double.infinity, 54),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                         elevation: 0,
                       ),
                       icon: const Icon(Icons.logout_rounded, size: 20),
-                      label: const Text('Keluar dari Akun Kurir Ini', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                      label: const Text(
+                        'Keluar dari Akun Kurir Ini',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       onPressed: () async {
                         await authProvider.logout();
                         if (mounted) {
@@ -438,7 +555,11 @@ class _CourierProfileScreenState extends State<CourierProfileScreen> {
         const SizedBox(width: 8),
         Text(
           title,
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black87),
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
         ),
       ],
     );
@@ -468,9 +589,20 @@ class _CourierProfileScreenState extends State<CourierProfileScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                Text(
+                  label,
+                  style: const TextStyle(fontSize: 11, color: Colors.grey),
+                ),
                 const SizedBox(height: 3),
-                valueWidget ?? Text(value, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black87)),
+                valueWidget ??
+                    Text(
+                      value,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
               ],
             ),
           ),

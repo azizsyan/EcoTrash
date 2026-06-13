@@ -8,7 +8,8 @@ class OrderModel {
   final int sellerId;
   final int? courierId;
   final int sellerAddressId;
-  final String status; // PENDING, ACCEPTED, PICKED_UP, DELIVERED, COMPLETED, CANCELLED
+  final String
+  status; // PENDING, ACCEPTED, PICKED_UP, DELIVERED, COMPLETED, CANCELLED
   final String? pickupPhoto;
   final double estimatedTotalWeight;
   final double? actualTotalWeight;
@@ -59,7 +60,9 @@ class OrderModel {
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
     var itemsList = json['items'] as List? ?? [];
-    List<OrderItemModel> parsedItems = itemsList.map((i) => OrderItemModel.fromJson(i)).toList();
+    List<OrderItemModel> parsedItems = itemsList
+        .map((i) => OrderItemModel.fromJson(i))
+        .toList();
 
     return OrderModel(
       id: json['id'] ?? 0,
@@ -69,10 +72,17 @@ class OrderModel {
       sellerAddressId: json['seller_address_id'] ?? 0,
       status: json['status'] ?? 'PENDING',
       pickupPhoto: json['pickup_photo'],
-      estimatedTotalWeight: double.tryParse(json['estimated_total_weight']?.toString() ?? '0') ?? 0.0,
-      actualTotalWeight: double.tryParse(json['actual_total_weight']?.toString() ?? ''),
-      estimatedTotalPrice: double.tryParse(json['estimated_total_price']?.toString() ?? '0') ?? 0.0,
-      totalPrice: double.tryParse(json['total_price']?.toString() ?? '0') ?? 0.0,
+      estimatedTotalWeight:
+          double.tryParse(json['estimated_total_weight']?.toString() ?? '0') ??
+          0.0,
+      actualTotalWeight: double.tryParse(
+        json['actual_total_weight']?.toString() ?? '',
+      ),
+      estimatedTotalPrice:
+          double.tryParse(json['estimated_total_price']?.toString() ?? '0') ??
+          0.0,
+      totalPrice:
+          double.tryParse(json['total_price']?.toString() ?? '0') ?? 0.0,
       pickupNotes: json['pickup_notes'],
       cancelReason: json['cancel_reason'],
       latitude: double.tryParse(json['latitude']?.toString() ?? '0') ?? 0.0,
@@ -87,8 +97,12 @@ class OrderModel {
       sellerAddress: json['seller_address'] != null
           ? SellerAddressModel.fromJson(json['seller_address'])
           : null,
-      seller: json['seller'] != null ? UserModel.fromJson(json['seller']) : null,
-      courier: json['courier'] != null ? UserModel.fromJson(json['courier']) : null,
+      seller: json['seller'] != null
+          ? UserModel.fromJson(json['seller'])
+          : null,
+      courier: json['courier'] != null
+          ? UserModel.fromJson(json['courier'])
+          : null,
     );
   }
 }
@@ -119,9 +133,11 @@ class OrderItemModel {
       id: json['id'] ?? 0,
       orderId: json['order_id'] ?? 0,
       wasteCategoryId: json['waste_category_id'] ?? 0,
-      estimatedWeight: double.tryParse(json['estimated_weight']?.toString() ?? '0') ?? 0.0,
+      estimatedWeight:
+          double.tryParse(json['estimated_weight']?.toString() ?? '0') ?? 0.0,
       actualWeight: double.tryParse(json['actual_weight']?.toString() ?? ''),
-      pricePerKg: double.tryParse(json['price_per_kg']?.toString() ?? '0') ?? 0.0,
+      pricePerKg:
+          double.tryParse(json['price_per_kg']?.toString() ?? '0') ?? 0.0,
       subtotal: double.tryParse(json['subtotal']?.toString() ?? '0') ?? 0.0,
       wasteCategory: json['waste_category'] != null
           ? WasteCategoryModel.fromJson(json['waste_category'])

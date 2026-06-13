@@ -22,12 +22,18 @@ class CourierOrderProvider extends ChangeNotifier {
 
   // Courier's current active accepted order (ACCEPTED, PICKED_UP, DELIVERED)
   OrderModel? get activeJob {
-    final list = _myJobs.where((o) => o.status == 'ACCEPTED' || o.status == 'PICKED_UP' || o.status == 'DELIVERED');
+    final list = _myJobs.where(
+      (o) =>
+          o.status == 'ACCEPTED' ||
+          o.status == 'PICKED_UP' ||
+          o.status == 'DELIVERED',
+    );
     return list.isNotEmpty ? list.first : null;
   }
 
   // Courier's completed job history
-  List<OrderModel> get completedJobs => _myJobs.where((o) => o.status == 'COMPLETED').toList();
+  List<OrderModel> get completedJobs =>
+      _myJobs.where((o) => o.status == 'COMPLETED').toList();
 
   Future<void> toggleOnlineStatus() async {
     try {
@@ -91,12 +97,20 @@ class CourierOrderProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> pickupJob(int orderId, List<int> fileBytes, String fileName) async {
+  Future<void> pickupJob(
+    int orderId,
+    List<int> fileBytes,
+    String fileName,
+  ) async {
     try {
       _isLoading = true;
       notifyListeners();
 
-      await _service.pickupOrder(orderId: orderId, fileBytes: fileBytes, fileName: fileName);
+      await _service.pickupOrder(
+        orderId: orderId,
+        fileBytes: fileBytes,
+        fileName: fileName,
+      );
       await fetchMyCourierJobs();
     } catch (_) {
       rethrow;
@@ -121,7 +135,10 @@ class CourierOrderProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> completeJob(int orderId, List<Map<String, dynamic>> items) async {
+  Future<void> completeJob(
+    int orderId,
+    List<Map<String, dynamic>> items,
+  ) async {
     try {
       _isLoading = true;
       notifyListeners();
@@ -149,7 +166,9 @@ class CourierOrderProvider extends ChangeNotifier {
   Future<void> fetchNotifications() async {
     try {
       final list = await _service.getNotifications();
-      _notifications = list.map((item) => NotificationModel.fromJson(item)).toList();
+      _notifications = list
+          .map((item) => NotificationModel.fromJson(item))
+          .toList();
       _unreadCount = await _service.getUnreadCount();
       notifyListeners();
     } catch (_) {}

@@ -78,7 +78,7 @@ class _ReviewCourierDialogState extends State<ReviewCourierDialog> {
               style: TextStyle(fontSize: 12, color: Colors.grey),
             ),
             const SizedBox(height: 20),
-            
+
             // Interactive 5 Star Selection
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -100,7 +100,7 @@ class _ReviewCourierDialogState extends State<ReviewCourierDialog> {
               }),
             ),
             const SizedBox(height: 16),
-            
+
             // Comment input box
             TextField(
               controller: _commentController,
@@ -108,7 +108,8 @@ class _ReviewCourierDialogState extends State<ReviewCourierDialog> {
               maxLength: 200,
               decoration: const InputDecoration(
                 labelText: 'Komentar Ulasan',
-                hintText: 'Tulis tanggapan Anda mengenai kurir (sopan, cepat, dll)...',
+                hintText:
+                    'Tulis tanggapan Anda mengenai kurir (sopan, cepat, dll)...',
               ),
             ),
           ],
@@ -129,7 +130,10 @@ class _ReviewCourierDialogState extends State<ReviewCourierDialog> {
               ? const SizedBox(
                   width: 20,
                   height: 20,
-                  child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
                 )
               : const Text('Kirim Ulasan'),
         ),

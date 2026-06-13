@@ -15,7 +15,13 @@ class SellerOrderProvider extends ChangeNotifier {
 
   // Active orders (PENDING, ACCEPTED, PICKED_UP, DELIVERED)
   List<OrderModel> get activeOrders => _orders
-      .where((o) => o.status == 'PENDING' || o.status == 'ACCEPTED' || o.status == 'PICKED_UP' || o.status == 'DELIVERED')
+      .where(
+        (o) =>
+            o.status == 'PENDING' ||
+            o.status == 'ACCEPTED' ||
+            o.status == 'PICKED_UP' ||
+            o.status == 'DELIVERED',
+      )
       .toList();
 
   // Completed or Cancelled orders
@@ -26,7 +32,9 @@ class SellerOrderProvider extends ChangeNotifier {
   Future<void> fetchCategories() async {
     try {
       final data = await _service.getWasteCategories();
-      _categories = data.map((item) => WasteCategoryModel.fromJson(item)).toList();
+      _categories = data
+          .map((item) => WasteCategoryModel.fromJson(item))
+          .toList();
       notifyListeners();
     } catch (_) {
       rethrow;

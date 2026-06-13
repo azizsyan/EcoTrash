@@ -24,8 +24,12 @@ class _SellerAddressesScreenState extends State<SellerAddressesScreen> {
   Future<void> addAddress() async {
     final labelController = TextEditingController();
     final addressController = TextEditingController();
-    final latController = TextEditingController(text: '-6.9174'); // Default Bandung Latitude
-    final lngController = TextEditingController(text: '107.6191'); // Default Bandung Longitude
+    final latController = TextEditingController(
+      text: '-6.9174',
+    ); // Default Bandung Latitude
+    final lngController = TextEditingController(
+      text: '107.6191',
+    ); // Default Bandung Longitude
     bool isDefault = false;
 
     final provider = context.read<SellerAddressProvider>();
@@ -36,7 +40,8 @@ class _SellerAddressesScreenState extends State<SellerAddressesScreen> {
       if (perm == LocationPermission.denied) {
         perm = await Geolocator.requestPermission();
       }
-      if (perm == LocationPermission.whileInUse || perm == LocationPermission.always) {
+      if (perm == LocationPermission.whileInUse ||
+          perm == LocationPermission.always) {
         Position pos = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.low,
           timeLimit: const Duration(seconds: 3),
@@ -52,7 +57,9 @@ class _SellerAddressesScreenState extends State<SellerAddressesScreen> {
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
               title: const Text('Tambah Alamat Baru'),
               content: SingleChildScrollView(
                 child: Column(
@@ -77,7 +84,9 @@ class _SellerAddressesScreenState extends State<SellerAddressesScreen> {
                     const SizedBox(height: 14),
                     TextField(
                       controller: latController,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       decoration: const InputDecoration(
                         labelText: 'Latitude (Garis Lintang)',
                         hintText: 'Contoh: -6.9174',
@@ -86,7 +95,9 @@ class _SellerAddressesScreenState extends State<SellerAddressesScreen> {
                     const SizedBox(height: 14),
                     TextField(
                       controller: lngController,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       decoration: const InputDecoration(
                         labelText: 'Longitude (Garis Bujur)',
                         hintText: 'Contoh: 107.6191',
@@ -94,7 +105,10 @@ class _SellerAddressesScreenState extends State<SellerAddressesScreen> {
                     ),
                     const SizedBox(height: 14),
                     CheckboxListTile(
-                      title: const Text('Jadikan Alamat Utama', style: TextStyle(fontSize: 14)),
+                      title: const Text(
+                        'Jadikan Alamat Utama',
+                        style: TextStyle(fontSize: 14),
+                      ),
                       value: isDefault,
                       activeColor: Colors.green,
                       contentPadding: EdgeInsets.zero,
@@ -107,7 +121,11 @@ class _SellerAddressesScreenState extends State<SellerAddressesScreen> {
                     const SizedBox(height: 10),
                     const Text(
                       'Koordinat di atas dideteksi otomatis via GPS. Anda dapat menyesuaikannya agar peta berjalan akurat.',
-                      style: TextStyle(fontSize: 10, color: Colors.grey, fontStyle: FontStyle.italic),
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.grey,
+                        fontStyle: FontStyle.italic,
+                      ),
                     ),
                   ],
                 ),
@@ -120,18 +138,27 @@ class _SellerAddressesScreenState extends State<SellerAddressesScreen> {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                   onPressed: () async {
                     try {
                       final label = labelController.text.trim();
                       final addr = addressController.text.trim();
-                      final double lat = double.tryParse(latController.text) ?? -6.9174;
-                      final double lng = double.tryParse(lngController.text) ?? 107.6191;
+                      final double lat =
+                          double.tryParse(latController.text) ?? -6.9174;
+                      final double lng =
+                          double.tryParse(lngController.text) ?? 107.6191;
 
                       if (label.isEmpty || addr.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Label dan Alamat tidak boleh kosong'), backgroundColor: Colors.orange),
+                          const SnackBar(
+                            content: Text(
+                              'Label dan Alamat tidak boleh kosong',
+                            ),
+                            backgroundColor: Colors.orange,
+                          ),
                         );
                         return;
                       }
@@ -154,7 +181,10 @@ class _SellerAddressesScreenState extends State<SellerAddressesScreen> {
                       );
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
+                        SnackBar(
+                          content: Text(e.toString()),
+                          backgroundColor: Colors.red,
+                        ),
                       );
                     }
                   },
@@ -172,7 +202,9 @@ class _SellerAddressesScreenState extends State<SellerAddressesScreen> {
     final labelController = TextEditingController(text: item.label);
     final addressController = TextEditingController(text: item.address);
     final latController = TextEditingController(text: item.latitude.toString());
-    final lngController = TextEditingController(text: item.longitude.toString());
+    final lngController = TextEditingController(
+      text: item.longitude.toString(),
+    );
     bool isDefault = item.isDefault;
 
     final provider = context.read<SellerAddressProvider>();
@@ -183,7 +215,9 @@ class _SellerAddressesScreenState extends State<SellerAddressesScreen> {
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
               title: const Text('Edit Alamat'),
               content: SingleChildScrollView(
                 child: Column(
@@ -208,7 +242,9 @@ class _SellerAddressesScreenState extends State<SellerAddressesScreen> {
                     const SizedBox(height: 14),
                     TextField(
                       controller: latController,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       decoration: const InputDecoration(
                         labelText: 'Latitude (Garis Lintang)',
                       ),
@@ -216,14 +252,19 @@ class _SellerAddressesScreenState extends State<SellerAddressesScreen> {
                     const SizedBox(height: 14),
                     TextField(
                       controller: lngController,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       decoration: const InputDecoration(
                         labelText: 'Longitude (Garis Bujur)',
                       ),
                     ),
                     const SizedBox(height: 14),
                     CheckboxListTile(
-                      title: const Text('Jadikan Alamat Utama', style: TextStyle(fontSize: 14)),
+                      title: const Text(
+                        'Jadikan Alamat Utama',
+                        style: TextStyle(fontSize: 14),
+                      ),
                       value: isDefault,
                       activeColor: Colors.green,
                       contentPadding: EdgeInsets.zero,
@@ -244,18 +285,27 @@ class _SellerAddressesScreenState extends State<SellerAddressesScreen> {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                   onPressed: () async {
                     try {
                       final label = labelController.text.trim();
                       final addr = addressController.text.trim();
-                      final double lat = double.tryParse(latController.text) ?? item.latitude;
-                      final double lng = double.tryParse(lngController.text) ?? item.longitude;
+                      final double lat =
+                          double.tryParse(latController.text) ?? item.latitude;
+                      final double lng =
+                          double.tryParse(lngController.text) ?? item.longitude;
 
                       if (label.isEmpty || addr.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Label dan Alamat tidak boleh kosong'), backgroundColor: Colors.orange),
+                          const SnackBar(
+                            content: Text(
+                              'Label dan Alamat tidak boleh kosong',
+                            ),
+                            backgroundColor: Colors.orange,
+                          ),
                         );
                         return;
                       }
@@ -279,7 +329,10 @@ class _SellerAddressesScreenState extends State<SellerAddressesScreen> {
                       );
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
+                        SnackBar(
+                          content: Text(e.toString()),
+                          backgroundColor: Colors.red,
+                        ),
                       );
                     }
                   },
@@ -307,7 +360,10 @@ class _SellerAddressesScreenState extends State<SellerAddressesScreen> {
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.green,
         icon: const Icon(Icons.add, color: Colors.white),
-        label: const Text('Tambah Alamat', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        label: const Text(
+          'Tambah Alamat',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         onPressed: addAddress,
       ),
       body: Container(
@@ -315,188 +371,260 @@ class _SellerAddressesScreenState extends State<SellerAddressesScreen> {
         child: provider.isLoading
             ? const Center(child: CircularProgressIndicator())
             : provider.addresses.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.location_off_outlined, size: 72, color: Colors.grey.withOpacity(0.4)),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'Belum ada alamat terdaftar',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey),
-                        ),
-                        const SizedBox(height: 8),
-                        const Text(
-                          'Tambahkan alamat penjemputan sampah Anda.',
-                          style: TextStyle(fontSize: 13, color: Colors.grey),
-                        ),
-                      ],
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.location_off_outlined,
+                      size: 72,
+                      color: Colors.grey.withOpacity(0.4),
                     ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    itemCount: provider.addresses.length,
-                    itemBuilder: (context, index) {
-                      final item = provider.addresses[index];
-                      final bool isDefault = item.isDefault;
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Belum ada alamat terdaftar',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Tambahkan alamat penjemputan sampah Anda.',
+                      style: TextStyle(fontSize: 13, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              )
+            : ListView.builder(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                itemCount: provider.addresses.length,
+                itemBuilder: (context, index) {
+                  final item = provider.addresses[index];
+                  final bool isDefault = item.isDefault;
 
-                      return Card(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          side: BorderSide(
-                            color: isDefault ? Colors.green : Colors.transparent,
-                            width: 2,
-                          ),
-                        ),
-                        elevation: 2,
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(16),
-                          onTap: isDefault
-                              ? null
-                              : () async {
-                                  // Set default when tapped
-                                  await provider.updateAddress(
-                                    id: item.id,
-                                    label: item.label,
-                                    address: item.address,
-                                    latitude: item.latitude,
-                                    longitude: item.longitude,
-                                    isDefault: true,
-                                  );
-                                  if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text('${item.label} dijadikan alamat utama'),
-                                        backgroundColor: Colors.green,
-                                      ),
-                                    );
-                                  }
-                                },
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      side: BorderSide(
+                        color: isDefault ? Colors.green : Colors.transparent,
+                        width: 2,
+                      ),
+                    ),
+                    elevation: 2,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: isDefault
+                          ? null
+                          : () async {
+                              // Set default when tapped
+                              await provider.updateAddress(
+                                id: item.id,
+                                label: item.label,
+                                address: item.address,
+                                latitude: item.latitude,
+                                longitude: item.longitude,
+                                isDefault: true,
+                              );
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      '${item.label} dijadikan alamat utama',
+                                    ),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                              }
+                            },
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          item.label.toLowerCase().contains('kantor')
-                                              ? Icons.business
-                                              : item.label.toLowerCase().contains('kos')
-                                                  ? Icons.home_work
-                                                  : Icons.home,
-                                          color: isDefault ? Colors.green : Colors.grey,
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text(
-                                          item.label,
-                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                                        ),
-                                      ],
+                                    Icon(
+                                      item.label.toLowerCase().contains(
+                                            'kantor',
+                                          )
+                                          ? Icons.business
+                                          : item.label.toLowerCase().contains(
+                                              'kos',
+                                            )
+                                          ? Icons.home_work
+                                          : Icons.home,
+                                      color: isDefault
+                                          ? Colors.green
+                                          : Colors.grey,
                                     ),
-                                    if (isDefault)
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                        decoration: BoxDecoration(
-                                          color: Colors.green.withOpacity(0.12),
-                                          borderRadius: BorderRadius.circular(8),
-                                        ),
-                                        child: const Text(
-                                          'Utama',
-                                          style: TextStyle(
-                                            color: Colors.green,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 11,
-                                          ),
-                                        ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      item.label,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
                                       ),
+                                    ),
                                   ],
                                 ),
-                                const SizedBox(height: 12),
-                                Text(
-                                  item.address,
-                                  style: const TextStyle(fontSize: 13, color: Colors.black87),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  'Koordinat: ${item.latitude}, ${item.longitude}',
-                                  style: const TextStyle(fontSize: 11, color: Colors.grey, fontFamily: 'monospace'),
-                                ),
-                                const Divider(height: 24),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    if (!isDefault)
-                                      TextButton.icon(
-                                        onPressed: () async {
-                                          await provider.updateAddress(
-                                            id: item.id,
-                                            label: item.label,
-                                            address: item.address,
-                                            latitude: item.latitude,
-                                            longitude: item.longitude,
-                                            isDefault: true,
-                                          );
-                                        },
-                                        icon: const Icon(Icons.star_border, size: 18, color: Colors.green),
-                                        label: const Text('Jadikan Utama', style: TextStyle(color: Colors.green, fontSize: 12)),
-                                      ),
-                                    TextButton.icon(
-                                      onPressed: () => editAddress(item),
-                                      icon: const Icon(Icons.edit_outlined, size: 18, color: Colors.blue),
-                                      label: const Text('Edit', style: TextStyle(color: Colors.blue, fontSize: 12)),
+                                if (isDefault)
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 4,
                                     ),
-                                    TextButton.icon(
-                                      onPressed: () async {
-                                        final confirm = await showDialog<bool>(
-                                          context: context,
-                                          builder: (_) {
-                                            return AlertDialog(
-                                              title: const Text('Hapus Alamat?'),
-                                              content: Text('Apakah Anda yakin ingin menghapus alamat "${item.label}"?'),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () => Navigator.pop(context, false),
-                                                  child: const Text('Batal'),
-                                                ),
-                                                ElevatedButton(
-                                                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                                                  onPressed: () => Navigator.pop(context, true),
-                                                  child: const Text('Hapus'),
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        );
-
-                                        if (confirm == true) {
-                                          await provider.deleteAddress(item.id);
-                                          if (context.mounted) {
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              const SnackBar(
-                                                content: Text('Alamat berhasil dihapus'),
+                                    decoration: BoxDecoration(
+                                      color: Colors.green.withOpacity(0.12),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: const Text(
+                                      'Utama',
+                                      style: TextStyle(
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              item.address,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Koordinat: ${item.latitude}, ${item.longitude}',
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: Colors.grey,
+                                fontFamily: 'monospace',
+                              ),
+                            ),
+                            const Divider(height: 24),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                if (!isDefault)
+                                  TextButton.icon(
+                                    onPressed: () async {
+                                      await provider.updateAddress(
+                                        id: item.id,
+                                        label: item.label,
+                                        address: item.address,
+                                        latitude: item.latitude,
+                                        longitude: item.longitude,
+                                        isDefault: true,
+                                      );
+                                    },
+                                    icon: const Icon(
+                                      Icons.star_border,
+                                      size: 18,
+                                      color: Colors.green,
+                                    ),
+                                    label: const Text(
+                                      'Jadikan Utama',
+                                      style: TextStyle(
+                                        color: Colors.green,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                                TextButton.icon(
+                                  onPressed: () => editAddress(item),
+                                  icon: const Icon(
+                                    Icons.edit_outlined,
+                                    size: 18,
+                                    color: Colors.blue,
+                                  ),
+                                  label: const Text(
+                                    'Edit',
+                                    style: TextStyle(
+                                      color: Colors.blue,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                                TextButton.icon(
+                                  onPressed: () async {
+                                    final confirm = await showDialog<bool>(
+                                      context: context,
+                                      builder: (_) {
+                                        return AlertDialog(
+                                          title: const Text('Hapus Alamat?'),
+                                          content: Text(
+                                            'Apakah Anda yakin ingin menghapus alamat "${item.label}"?',
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context, false),
+                                              child: const Text('Batal'),
+                                            ),
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
                                                 backgroundColor: Colors.red,
                                               ),
-                                            );
-                                          }
-                                        }
+                                              onPressed: () =>
+                                                  Navigator.pop(context, true),
+                                              child: const Text('Hapus'),
+                                            ),
+                                          ],
+                                        );
                                       },
-                                      icon: const Icon(Icons.delete_outline, size: 18, color: Colors.red),
-                                      label: const Text('Hapus', style: TextStyle(color: Colors.red, fontSize: 12)),
+                                    );
+
+                                    if (confirm == true) {
+                                      await provider.deleteAddress(item.id);
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                              'Alamat berhasil dihapus',
+                                            ),
+                                            backgroundColor: Colors.red,
+                                          ),
+                                        );
+                                      }
+                                    }
+                                  },
+                                  icon: const Icon(
+                                    Icons.delete_outline,
+                                    size: 18,
+                                    color: Colors.red,
+                                  ),
+                                  label: const Text(
+                                    'Hapus',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 12,
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ],
                             ),
-                          ),
+                          ],
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    ),
+                  );
+                },
+              ),
       ),
     );
   }
