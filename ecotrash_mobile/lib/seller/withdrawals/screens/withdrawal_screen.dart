@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../wallet/providers/seller_wallet_provider.dart';
@@ -12,7 +13,17 @@ class WithdrawalScreen extends StatefulWidget {
 
 class _WithdrawalScreenState extends State<WithdrawalScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController bankController = TextEditingController();
+  String? _selectedBankName;
+  final List<String> _bankOptions = [
+    'BCA',
+    'Mandiri',
+    'BNI',
+    'BRI',
+    'GoPay',
+    'OVO',
+    'Dana',
+    'LinkAja',
+  ];
   final TextEditingController accountNameController = TextEditingController();
   final TextEditingController accountNumberController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
@@ -45,7 +56,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
 
     try {
       await walletProvider.requestWithdrawal(
-        bankName: bankController.text.trim(),
+        bankName: _selectedBankName ?? '',
         accountName: accountNameController.text.trim(),
         accountNumber: accountNumberController.text.trim(),
         amount: amount,
@@ -60,7 +71,9 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
       );
 
       // Reset form
-      bankController.clear();
+      setState(() {
+        _selectedBankName = null;
+      });
       accountNameController.clear();
       accountNumberController.clear();
       amountController.clear();
@@ -113,17 +126,28 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                     ),
                     const SizedBox(height: 24),
 
-                    // Bank Name
-                    TextFormField(
-                      controller: bankController,
+                    // Bank Name Dropdown
+                    DropdownButtonFormField<String>(
+                      value: _selectedBankName,
                       decoration: const InputDecoration(
                         labelText: 'Nama Bank / E-Wallet',
                         prefixIcon: Icon(Icons.account_balance),
-                        hintText: 'BCA / Mandiri / GoPay / OVO',
                       ),
+                      hint: const Text('Pilih Bank / E-Wallet'),
+                      items: _bankOptions.map((String bank) {
+                        return DropdownMenuItem<String>(
+                          value: bank,
+                          child: Text(bank),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          _selectedBankName = newValue;
+                        });
+                      },
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Nama bank wajib diisi';
+                          return 'Nama bank wajib dipilih';
                         }
                         return null;
                       },
@@ -134,6 +158,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                     TextFormField(
                       controller: accountNumberController,
                       keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: const InputDecoration(
                         labelText: 'Nomor Rekening / No. Telepon',
                         prefixIcon: Icon(Icons.credit_card),
@@ -169,6 +194,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                     TextFormField(
                       controller: amountController,
                       keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: const InputDecoration(
                         labelText: 'Nominal Penarikan (Rupiah)',
                         prefixIcon: Icon(Icons.monetization_on_outlined),
