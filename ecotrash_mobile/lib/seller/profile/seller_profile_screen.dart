@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import 'dart:typed_data';
+import 'package:image_picker/image_picker.dart';
 
+import '../../../core/network/dio_client.dart';
 import '../../../shared/auth/providers/auth_provider.dart';
 import '../orders/providers/seller_order_provider.dart';
 import '../wallet/providers/seller_wallet_provider.dart';
@@ -33,6 +36,8 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
 
   bool _isEditing = false;
   String _selectedAvatar = 'assets/images/seller1.jpg';
+  List<int>? _pickedImageBytes;
+  String? _pickedImageName;
 
   @override
   void initState() {
@@ -90,6 +95,97 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
 
 
 
+  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    
+    final ImageSource? source = await showModalBottomSheet<ImageSource>(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Pilih Sumber Foto Profil',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1A1A1A),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: () => Navigator.pop(context, ImageSource.camera),
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade200),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Column(
+                          children: const [
+                            Icon(Icons.camera_alt_rounded, color: Colors.green, size: 32),
+                            SizedBox(height: 8),
+                            Text('Kamera', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () => Navigator.pop(context, ImageSource.gallery),
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade200),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Column(
+                          children: const [
+                            Icon(Icons.photo_library_rounded, color: Colors.green, size: 32),
+                            SizedBox(height: 8),
+                            Text('Galeri', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    if (source == null) return;
+
+    final XFile? image = await picker.pickImage(
+      source: source,
+      imageQuality: 70,
+    );
+
+    if (image == null) return;
+
+    final bytes = await image.readAsBytes();
+    setState(() {
+      _pickedImageBytes = bytes;
+      _pickedImageName = image.name;
+    });
+  }
+
   Future<void> _updateProfile() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -99,10 +195,14 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
         name: nameController.text.trim(),
         email: authProvider.user?['email'] ?? '',
         phone: phoneController.text.trim(),
+        photoBytes: _pickedImageBytes,
+        photoName: _pickedImageName,
       );
 
       setState(() {
         _isEditing = false;
+        _pickedImageBytes = null;
+        _pickedImageName = null;
       });
 
       if (!mounted) return;
@@ -271,32 +371,71 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
                           child: Column(
                             children: [
                               // Circular avatar with local asset load + error fallback
-                              Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: Colors.green, width: 3),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.1),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 4),
-                                    )
-                                  ]
-                                ),
-                                child: CircleAvatar(
-                                  radius: 48,
-                                  backgroundColor: Colors.white,
-                                  child: ClipOval(
-                                    child: Image.asset(
-                                      _selectedAvatar,
-                                      fit: BoxFit.cover,
-                                      width: 96,
-                                      height: 96,
-                                      errorBuilder: (context, error, stackTrace) {
-                                        return const Icon(Icons.person, size: 54, color: Colors.green);
-                                      },
+                              // Circular avatar with local asset load + error fallback / preview / network
+                              GestureDetector(
+                                onTap: _isEditing ? _pickImage : null,
+                                child: Stack(
+                                  alignment: Alignment.bottomRight,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(color: Colors.green, width: 3),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(0.1),
+                                            blurRadius: 8,
+                                            offset: const Offset(0, 4),
+                                          )
+                                        ]
+                                      ),
+                                      child: CircleAvatar(
+                                        radius: 48,
+                                        backgroundColor: Colors.white,
+                                        child: ClipOval(
+                                          child: _pickedImageBytes != null
+                                              ? Image.memory(
+                                                  Uint8List.fromList(_pickedImageBytes!),
+                                                  fit: BoxFit.cover,
+                                                  width: 96,
+                                                  height: 96,
+                                                )
+                                              : (user['profile_photo'] != null
+                                                  ? Image.network(
+                                                      '${DioClient().baseUrl}/storage-proxy/${user['profile_photo']}',
+                                                      fit: BoxFit.cover,
+                                                      width: 96,
+                                                      height: 96,
+                                                      errorBuilder: (context, error, stackTrace) {
+                                                        return const Icon(Icons.person, size: 54, color: Colors.green);
+                                                      },
+                                                    )
+                                                  : Image.asset(
+                                                      _selectedAvatar,
+                                                      fit: BoxFit.cover,
+                                                      width: 96,
+                                                      height: 96,
+                                                      errorBuilder: (context, error, stackTrace) {
+                                                        return const Icon(Icons.person, size: 54, color: Colors.green);
+                                                      },
+                                                    )),
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                    if (_isEditing)
+                                      Container(
+                                        padding: const EdgeInsets.all(6),
+                                        decoration: const BoxDecoration(
+                                          color: Colors.green,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: const Icon(
+                                          Icons.camera_alt,
+                                          color: Colors.white,
+                                          size: 16,
+                                        ),
+                                      ),
+                                  ],
                                 ),
                               ),
                               const SizedBox(height: 16),
@@ -478,6 +617,8 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
                             onPressed: () {
                               setState(() {
                                 _isEditing = false;
+                                _pickedImageBytes = null;
+                                _pickedImageName = null;
                                 _initializeFields(); // Restore fields
                               });
                             },

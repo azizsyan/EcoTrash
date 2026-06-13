@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 import '../../../core/network/dio_client.dart';
 
 class AuthService {
@@ -76,6 +77,8 @@ class AuthService {
     required String name,
     required String email,
     required String phone,
+    List<int>? photoBytes,
+    String? photoName,
     // courier details optional
     String? vehicleType,
     String? vehiclePlate,
@@ -84,21 +87,54 @@ class AuthService {
     String? province,
   }) async {
     try {
-      final Map<String, dynamic> data = {
+      final Map<String, dynamic> fields = {
         'name': name,
         'email': email,
         'phone': phone,
       };
-      if (vehicleType != null) data['vehicle_type'] = vehicleType;
-      if (vehiclePlate != null) data['vehicle_plate'] = vehiclePlate;
-      if (address != null) data['address'] = address;
-      if (city != null) data['city'] = city;
-      if (province != null) data['province'] = province;
+      if (vehicleType != null) fields['vehicle_type'] = vehicleType;
+      if (vehiclePlate != null) fields['vehicle_plate'] = vehiclePlate;
+      if (address != null) fields['address'] = address;
+      if (city != null) fields['city'] = city;
+      if (province != null) fields['province'] = province;
 
-      final response = await _dio.patch(
-        '/profile',
-        data: data,
-      );
+      Response response;
+      if (photoBytes != null && photoName != null) {
+        String mimeType = 'image/jpeg';
+        final nameLower = photoName.toLowerCase();
+        if (nameLower.endsWith('.png')) {
+          mimeType = 'image/png';
+        } else if (nameLower.endsWith('.webp')) {
+          mimeType = 'image/webp';
+        } else if (nameLower.endsWith('.gif')) {
+          mimeType = 'image/gif';
+        }
+
+        final formDataMap = Map<String, dynamic>.from(fields);
+        formDataMap['profile_photo'] = MultipartFile.fromBytes(
+          photoBytes,
+          filename: photoName,
+          contentType: MediaType.parse(mimeType),
+        );
+        formDataMap['_method'] = 'PATCH'; // backup for method spoofing
+
+        final formData = FormData.fromMap(formDataMap);
+
+        response = await _dio.post(
+          '/profile',
+          data: formData,
+          options: Options(
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          ),
+        );
+      } else {
+        response = await _dio.patch(
+          '/profile',
+          data: fields,
+        );
+      }
       return response.data;
     } on DioException catch (e) {
       throw Exception(e.message ?? 'Gagal memperbarui profil');
