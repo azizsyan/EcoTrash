@@ -42,6 +42,13 @@ class _LoginScreenState extends State<LoginScreen> {
       // Cross-role validation (Check if returned role matches UI selection)
       if (role.toLowerCase() != selectedRole) {
         await authProvider.logout();
+        
+        if (role.toLowerCase() == 'admin' || role.toLowerCase() == 'super-admin' || role.toLowerCase() == 'superadmin') {
+          throw Exception(
+            'Akun ini terdaftar sebagai Admin/Super Admin dan tidak dapat mengakses aplikasi mobile.',
+          );
+        }
+        
         throw Exception(
           'Akun ini terdaftar sebagai ${role.toUpperCase() == "SELLER" ? "Seller" : "Courier"}, silakan ubah pilihan peran Anda.',
         );

@@ -35,8 +35,6 @@ Route::middleware('guest')
                 'login'
             ]
         );
-
-        // Forgot/reset password routes removed (not used for dummy data)
     });
 
 /*

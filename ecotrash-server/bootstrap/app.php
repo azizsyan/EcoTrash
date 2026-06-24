@@ -22,6 +22,9 @@ return Application::configure(
 
             'role' =>
                 \App\Http\Middleware\RoleMiddleware::class,
+
+            'admin' =>
+                \App\Http\Middleware\AdminWebMiddleware::class,
         ]);
 
     })

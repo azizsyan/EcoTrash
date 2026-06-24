@@ -57,6 +57,16 @@ class WebAuthController extends Controller
                 ]);
         }
 
+        /* Cek apakah user adalah admin atau superadmin */
+        if (!in_array($user->role_id, [1, 2])) {
+            Auth::logout();
+
+            return back()
+                ->withErrors([
+                    'email' => 'Hanya akun Admin atau Super Admin yang diizinkan masuk ke panel ini.'
+                ]);
+        }
+
         /* Update Online Status */
 
         $user->update([
