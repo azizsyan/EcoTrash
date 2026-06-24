@@ -73,7 +73,7 @@
     <div class="col-md-6 col-xl-3">
         <div class="dashboard-card h-100">
             <p class="text-muted mb-2">
-                Total Pendapatan
+                Total Pengeluaran
             </p>
 
             <h2

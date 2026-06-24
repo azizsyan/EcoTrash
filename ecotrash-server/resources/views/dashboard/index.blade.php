@@ -136,7 +136,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="dashboard-card">
                 <div class="card-label">
-                    Pendapatan
+                    Pengeluaran
                 </div>
 
                 <div class="card-value text-success">
